@@ -1,11 +1,10 @@
 name: keyboard_detection
 description: This plugin gives you an easy way to detect if the keyboard is visible or not.
-version: 0.0.1
+version: 0.0.1+1
 homepage: https://github.com/vursin/keyboard_detection
 
 environment:
-  sdk: ">=2.16.2 <3.0.0"
-  flutter: ">=2.5.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
