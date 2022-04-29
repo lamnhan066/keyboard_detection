@@ -1,18 +1,36 @@
-# keyboard_detection
+# Keyboard Detection
 
-A new flutter plugin project.
+This plugin gives you an easy way to detect if the keyboard is visible or not. It uses the resizing of the bottom view inset to check the the keyboard visibility, so it's native to flutter.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+You just need to wrap the Scaffold with KeyboardDetection like below and listen to `onChanged` value.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+``` dart
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: KeyboardDetection(
+        timerDuration: const Duration(milliseconds: 10),
+        onChanged: (value) {
+          print('Is Keyboard Opened: $value');
+          setState(() {
+            isKeyboardOpened = value;
+          });
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Keyboard Detection'),
+          ),
+          body: Center(
+            child: Text('Is Keyboard Opened: $isKeyboardOpened'),
+          ),
+        ),
+      ),
+    );
+  }
+```
 
-The plugin project was generated without specifying the `--platforms` flag, no platforms are currently supported.
-To add platforms, run `flutter create -t plugin --platforms <platforms> .` under the same
-directory. You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
+`onChanged` will be `true` if the keyboard is visible and `false` otherwise.
+
+`timerDuration` is the time interval between 2 checks. Default is 100 milliseconds.

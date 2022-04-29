@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-/// This function using bottom view inset to check the the keyboard is
-/// opened or closed.
+/// This function uses the resizing of the bottom view inset to check the the keyboard visibility
 class KeyboardDetection extends StatefulWidget {
   const KeyboardDetection({
     Key? key,
@@ -12,7 +11,7 @@ class KeyboardDetection extends StatefulWidget {
     this.timerDuration = const Duration(milliseconds: 100),
   }) : super(key: key);
 
-  /// This value will notify when the keyboard is opened or closed.
+  /// This value will notify when the keyboard is visible (`true`) or nor (`false`).
   final Function(bool isKeyboardOpened) onChanged;
 
   /// This is child widget.
@@ -26,8 +25,11 @@ class KeyboardDetection extends StatefulWidget {
 }
 
 class _KeyboardDetectionState extends State<KeyboardDetection> {
+  // Control the timer
   Timer? _timer;
-  double _lastBottomInset = 0;
+
+  // initial value to ensure onChanged will recieve the first state.
+  double _lastBottomInset = 1;
 
   @override
   void initState() {
