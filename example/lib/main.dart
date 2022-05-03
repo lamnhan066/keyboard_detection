@@ -14,23 +14,40 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isKeyboardOpened = false;
+
+  late KeyboardDetectionController keyboardDetectionController;
+
+  @override
+  void initState() {
+    keyboardDetectionController = KeyboardDetectionController(
+      timerDuration: const Duration(milliseconds: 10),
+      onChanged: (value) {
+        print('Is Keyboard Opened: $value');
+        setState(() {
+          isKeyboardOpened = value;
+        });
+      },
+    );
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: KeyboardDetection(
-        timerDuration: const Duration(milliseconds: 10),
-        onChanged: (value) {
-          print('Is Keyboard Opened: $value');
-          setState(() {
-            isKeyboardOpened = value;
-          });
-        },
+        controller: keyboardDetectionController,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Keyboard Detection'),
           ),
           body: Center(
-            child: Text('Is Keyboard Opened: $isKeyboardOpened'),
+            child: Column(
+              children: [
+                Text('Is Keyboard Opened: $isKeyboardOpened'),
+                const TextField(),
+              ],
+            ),
           ),
         ),
       ),
