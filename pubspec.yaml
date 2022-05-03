@@ -1,6 +1,6 @@
 name: keyboard_detection
 description: This plugin gives you an easy way to detect if the keyboard is visible or not.
-version: 0.0.1+1
+version: 0.1.0
 homepage: https://github.com/vursin/keyboard_detection
 
 environment:
