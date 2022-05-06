@@ -12,7 +12,7 @@ class KeyboardDetectionController {
     this.onChanged,
     this.timerDuration = const Duration(milliseconds: 100),
   }) {
-    asStream.listen((currentStateStream) {
+    _asStreamSubscription = asStream.listen((currentStateStream) {
       _currentState = currentStateStream;
 
       if (onChanged != null) {
@@ -23,6 +23,9 @@ class KeyboardDetectionController {
 
   /// Controller for the keyboard visibility stream.
   final StreamController<bool> _streamController = StreamController.broadcast();
+
+  /// Control the asStream listener.
+  StreamSubscription<bool>? _asStreamSubscription;
 
   /// Control the state of the keyboard visibility.
   bool? _currentState;
@@ -53,4 +56,10 @@ class KeyboardDetectionController {
       : _currentState!
           ? KeyboardState.visible
           : KeyboardState.hidden;
+
+  /// Close unused variables after dispose. Internal use only.
+  void _close() {
+    _asStreamSubscription?.cancel();
+    _streamController.close();
+  }
 }

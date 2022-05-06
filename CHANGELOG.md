@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Auto close usused resources after dispose.
+
 ## 0.2.0
 
 * Added 3 variables to `KeyboardDetectionController` to get the current state of the keyboard visibility:

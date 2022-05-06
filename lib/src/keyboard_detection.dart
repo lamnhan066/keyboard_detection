@@ -56,7 +56,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection> {
   @override
   void dispose() {
     _timer?.cancel();
-    widget.controller._streamController.close();
+    widget.controller._close();
     super.dispose();
   }
 
