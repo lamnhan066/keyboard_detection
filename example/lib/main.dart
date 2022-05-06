@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isKeyboardOpened = false;
+  bool isKeyboardVisible = false;
 
   late KeyboardDetectionController keyboardDetectionController;
 
@@ -22,12 +22,16 @@ class _MyAppState extends State<MyApp> {
     keyboardDetectionController = KeyboardDetectionController(
       timerDuration: const Duration(milliseconds: 10),
       onChanged: (value) {
-        print('Is Keyboard Opened: $value');
+        print('Keyboard visibility onChanged: $value');
         setState(() {
-          isKeyboardOpened = value;
+          isKeyboardVisible = value;
         });
       },
     );
+
+    keyboardDetectionController.asStream.listen((isVisible) {
+      print('Listen from stream: $isVisible');
+    });
 
     super.initState();
   }
@@ -44,7 +48,13 @@ class _MyAppState extends State<MyApp> {
           body: Center(
             child: Column(
               children: [
-                Text('Is Keyboard Opened: $isKeyboardOpened'),
+                Text('Is keyboard visible: $isKeyboardVisible'),
+                Text(
+                  'Get current state: ${keyboardDetectionController.currentState}',
+                ),
+                Text(
+                  'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
+                ),
                 const TextField(),
               ],
             ),

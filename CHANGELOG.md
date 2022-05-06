@@ -1,6 +1,13 @@
+## 0.2.0
+
+* Added 3 variables to `KeyboardDetectionController` to get the current state of the keyboard visibility:
+  * `currentState`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden).
+  * `keyboardState`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visible`: visible, `hidden`: hidden).
+  * `asStream` to listen for keyboard visibility changing events in `bool`.
+
 ## 0.1.0
 
-* Bug fixed: Keyboard visibility only notify one time when changed.
+* Bug fixed: Now keyboard visibility only notify one time when changed.
 
 * [BREAKING CHANGE]
 

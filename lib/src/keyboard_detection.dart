@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:keyboard_detection/src/keyboard_detection_controller.dart';
+
+part 'keyboard_detection_controller.dart';
 
 class KeyboardDetection extends StatefulWidget {
   /// This function uses the resizing of the bottom view inset to check the the keyboard visibility
@@ -22,33 +23,29 @@ class KeyboardDetection extends StatefulWidget {
 }
 
 class _KeyboardDetectionState extends State<KeyboardDetection> {
-  late KeyboardDetectionController _controller;
-
   // Control the timer
   Timer? _timer;
 
   // Initial value to ensure onChanged will recieve the first state.
   double _lastBottomInset = 1;
 
-  // Last keyboard state.
-  bool? _lastState;
-
   @override
   void initState() {
-    _controller = widget.controller;
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _timer = Timer.periodic(_controller.timerDuration, (_) {
+      _timer = Timer.periodic(widget.controller.timerDuration, (_) {
         final bottomInset = MediaQuery.of(context).viewInsets.bottom;
         if (bottomInset != _lastBottomInset) {
-          if (bottomInset < _lastBottomInset && _lastState != false) {
+          if (bottomInset < _lastBottomInset &&
+              widget.controller._currentState != false) {
             _lastBottomInset = bottomInset;
-            _lastState = false;
-            _controller.onChanged(false);
+
+            widget.controller._streamController.sink.add(false);
           }
-          if (bottomInset > _lastBottomInset && _lastState != true) {
+          if (bottomInset > _lastBottomInset &&
+              widget.controller._currentState != true) {
             _lastBottomInset = bottomInset;
-            _lastState = true;
-            _controller.onChanged(true);
+
+            widget.controller._streamController.sink.add(true);
           }
         }
       });
@@ -59,6 +56,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection> {
   @override
   void dispose() {
     _timer?.cancel();
+    widget.controller._streamController.close();
     super.dispose();
   }
 

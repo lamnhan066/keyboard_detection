@@ -7,16 +7,16 @@ This plugin gives you an easy way to detect if the keyboard is visible or not. I
 You just need to wrap the `Scaffold` with `KeyboardDetection` like below and listen to `onChanged` value.
 
 ``` dart
- @override
+@override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: KeyboardDetection(
         controller: KeyboardDetectionController(
           timerDuration: const Duration(milliseconds: 10),
           onChanged: (value) {
-            print('Is Keyboard Opened: $value');
+            print('Keyboard visibility onChanged: $value');
             setState(() {
-              isKeyboardOpened = value;
+              isKeyboardVisible = value;
             });
           },
         ),
@@ -27,7 +27,13 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
           body: Center(
             child: Column(
               children: [
-                Text('Is Keyboard Opened: $isKeyboardOpened'),
+                Text('Is keyboard visible: $isKeyboardVisible'),
+                Text(
+                  'Get current state: ${keyboardDetectionController.currentState}',
+                ),
+                Text(
+                  'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
+                ),
                 const TextField(),
               ],
             ),
@@ -36,7 +42,6 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
       ),
     );
   }
-}
 ```
 
 `onChanged` will be `true` if the keyboard is visible and `false` otherwise.
@@ -55,12 +60,16 @@ You can declare the `controller` outside the `build` method like below:
     keyboardDetectionController = KeyboardDetectionController(
       timerDuration: const Duration(milliseconds: 10),
       onChanged: (value) {
-        print('Is Keyboard Opened: $value');
+        print('Keyboard visibility onChanged: $value');
         setState(() {
-          isKeyboardOpened = value;
+          isKeyboardVisible = value;
         });
       },
     );
+
+    keyboardDetectionController.asStream.listen((isVisible) {
+      print('Listen from stream: $isVisible');
+    });
 
     super.initState();
   }
@@ -81,7 +90,13 @@ and add it to `controller` inside `build` method:
           body: Center(
             child: Column(
               children: [
-                Text('Is Keyboard Opened: $isKeyboardOpened'),
+                Text('Is keyboard visible: $isKeyboardVisible'),
+                Text(
+                  'Get current state: ${keyboardDetectionController.currentState}',
+                ),
+                Text(
+                  'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
+                ),
                 const TextField(),
               ],
             ),
@@ -90,5 +105,10 @@ and add it to `controller` inside `build` method:
       ),
     );
   }
-}
 ```
+
+You can get the current state of the keyboard visibility by using:
+
+* `keyboardDetectionController.currentState`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden).
+* `keyboardDetectionController.keyboardState`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visible`: visible, `hidden`: hidden).
+* `keyboardDetectionController.asStream` to listen for keyboard visibility changing events in `bool`.

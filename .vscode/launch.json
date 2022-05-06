@@ -7,19 +7,22 @@
         {
             "name": "keyboard_detection",
             "request": "launch",
-            "type": "dart"
+            "type": "dart", 
+            // "program": "example/lib/main.dart"
         },
         {
             "name": "keyboard_detection (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile", 
+            // "program": "example/lib/main.dart"
         },
         {
             "name": "keyboard_detection (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release", 
+            // "program": "example/lib/main.dart"
         },
         {
             "name": "example",
