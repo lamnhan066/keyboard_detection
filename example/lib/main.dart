@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:keyboard_detection/keyboard_detection.dart';
 
@@ -20,13 +22,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     keyboardDetectionController = KeyboardDetectionController(
-      timerDuration: const Duration(milliseconds: 10),
       onChanged: (value) {
         print('Keyboard visibility onChanged: $value');
         setState(() {
           isKeyboardVisible = value;
         });
       },
+      minDifferentSize: 100,
     );
 
     keyboardDetectionController.asStream.listen((isVisible) {

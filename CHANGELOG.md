@@ -1,3 +1,10 @@
+## 0.3.0
+
+* Compatible with Flutter 3.0.
+* Changed from using `Timer` to `didChangeMetrics` for listening to the changing of the bottom view insets.
+* Added `minDifferentSize` parameter to `KeyboardDetectionController`, now you can set the minimum changed of size between two checks to detect the keyboard visibility. Default value is 0.
+* [Deprecated]: Don't need to use `timerDuration` in `KeyboardDetectionController` since this version.
+
 ## 0.2.1
 
 * Auto close usused resources after dispose.

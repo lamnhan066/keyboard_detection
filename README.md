@@ -12,13 +12,13 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
     return MaterialApp(
       home: KeyboardDetection(
         controller: KeyboardDetectionController(
-          timerDuration: const Duration(milliseconds: 10),
           onChanged: (value) {
             print('Keyboard visibility onChanged: $value');
             setState(() {
               isKeyboardVisible = value;
             });
           },
+          minDifferentSize: 100,
         ),
         child: Scaffold(
           appBar: AppBar(
@@ -46,7 +46,9 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
 
 `onChanged` will be `true` if the keyboard is visible and `false` otherwise.
 
-`timerDuration` is the time interval between 2 checks. Default is 100 milliseconds.
+`timerDuration` is the time interval between two checks. Default value is 100 milliseconds.
+
+`minDifferentSize` is the minimum different size of bottom view insets between two checks. Default value is 0.
 
 ## Another Way
 
@@ -58,13 +60,13 @@ You can declare the `controller` outside the `build` method like below:
   @override
   void initState() {
     keyboardDetectionController = KeyboardDetectionController(
-      timerDuration: const Duration(milliseconds: 10),
       onChanged: (value) {
         print('Keyboard visibility onChanged: $value');
         setState(() {
           isKeyboardVisible = value;
         });
       },
+      minDifferentSize: 100,
     );
 
     keyboardDetectionController.asStream.listen((isVisible) {

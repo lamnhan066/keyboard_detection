@@ -10,7 +10,9 @@ class KeyboardDetectionController {
   /// `timerDuration`: The time interval between 2 checks. Default is 100 milliseconds.
   KeyboardDetectionController({
     this.onChanged,
-    this.timerDuration = const Duration(milliseconds: 100),
+    @Deprecated('Do not need to use this value since version 0.3.0')
+        this.timerDuration = const Duration(milliseconds: 100),
+    this.minDifferentSize = 0,
   }) {
     _asStreamSubscription = asStream.listen((currentStateStream) {
       _currentState = currentStateStream;
@@ -34,7 +36,15 @@ class KeyboardDetectionController {
   final Function(bool)? onChanged;
 
   /// The time interval between 2 checks. Default is 100 milliseconds.
+  @Deprecated('Do not need to use this value since version 0.3.0')
   final Duration timerDuration;
+
+  /// The minimun difference between the current size and the last size of bottom view inset.
+  ///
+  /// When the keyboard's showing up, the size of bottom view inset will be changed
+  /// and the plugin will use `minDifferentSize` to compare the changing of size
+  /// to notify the keyboard visibility.
+  final double minDifferentSize;
 
   /// Get the current keyboard state stream.
   Stream<bool> get asStream => _streamController.stream.asBroadcastStream();
@@ -63,3 +73,11 @@ class KeyboardDetectionController {
     _streamController.close();
   }
 }
+
+/// This allows a value of type T or T?
+/// to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become
+/// non-nullable can still be used with `!` and `?`
+/// to support older versions of the API as well.
+T? _ambiguate<T>(T? value) => value;
