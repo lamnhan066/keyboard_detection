@@ -7,12 +7,10 @@ class KeyboardDetectionController {
   ///
   /// `onChanged`: This value will be notified when the keyboard is visible (`true`) or not (`false`).
   ///
-  /// `timerDuration`: The time interval between 2 checks. Default is 100 milliseconds.
+  /// `minDifferentSize`: The minimun changed of the bottom view insets to notify. Default value is 100.
   KeyboardDetectionController({
     this.onChanged,
-    @Deprecated('Do not need to use this value since version 0.3.0')
-        this.timerDuration = const Duration(milliseconds: 100),
-    this.minDifferentSize = 0,
+    this.minDifferentSize = 100,
   }) {
     _asStreamSubscription = asStream.listen((currentStateStream) {
       _currentState = currentStateStream;
@@ -23,21 +21,8 @@ class KeyboardDetectionController {
     });
   }
 
-  /// Controller for the keyboard visibility stream.
-  final StreamController<bool> _streamController = StreamController.broadcast();
-
-  /// Control the asStream listener.
-  StreamSubscription<bool>? _asStreamSubscription;
-
-  /// Control the state of the keyboard visibility.
-  bool? _currentState;
-
   /// This value will be notified when the keyboard is visible (`true`) or not (`false`).
   final Function(bool)? onChanged;
-
-  /// The time interval between 2 checks. Default is 100 milliseconds.
-  @Deprecated('Do not need to use this value since version 0.3.0')
-  final Duration timerDuration;
 
   /// The minimun difference between the current size and the last size of bottom view inset.
   ///
@@ -46,8 +31,17 @@ class KeyboardDetectionController {
   /// to notify the keyboard visibility.
   final double minDifferentSize;
 
+  /// Controller for the keyboard visibility stream.
+  final StreamController<bool> _streamController = StreamController.broadcast();
+
+  /// Control the asStream listener.
+  StreamSubscription<bool>? _asStreamSubscription;
+
   /// Get the current keyboard state stream.
   Stream<bool> get asStream => _streamController.stream.asBroadcastStream();
+
+  /// Control the state of the keyboard visibility.
+  bool? _currentState;
 
   /// Get current state of the keyboard visibility.
   ///
@@ -66,6 +60,24 @@ class KeyboardDetectionController {
       : _currentState!
           ? KeyboardState.visible
           : KeyboardState.hidden;
+
+  // Control the size of keyboard.
+  double? _keyboardSize;
+
+  /// Get the keyboard size. The keyboard must be visible at least 1 time to make this works.
+  /// If not, this value will return 0. You can check to ensure the keyboard size is available
+  /// via `isKeyboardSizeLoaded`.
+  ///
+  /// [NOTICE]: This value may be loaded after the keyboard visibility a little bit
+  /// because the keyboard needs more time to be showed up completely. So that this value
+  /// may still 0 when the `KeyboardState` is `visible`.
+  double get keyboardSize => _keyboardSize ?? 0;
+
+  // Control the keyboard size state.
+  bool? _isKeyboardSizeLoaded;
+
+  /// To ensure that the keyboard size is available.
+  bool get isKeyboardSizeLoaded => _isKeyboardSizeLoaded ?? false;
 
   /// Close unused variables after dispose. Internal use only.
   void _close() {

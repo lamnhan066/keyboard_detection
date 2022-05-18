@@ -26,14 +26,15 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     with WidgetsBindingObserver {
   // Initial value to ensure onChanged will recieve the first state.
   double _lastBottomInset = 1;
+  double _lastFinishedBottomInset = 1;
 
   @override
   void initState() {
     super.initState();
     // To ensure that the plugin will notify the first state.
-    if (widget.controller.minDifferentSize > 0) {
-      _lastBottomInset = widget.controller.minDifferentSize;
-    }
+    _lastBottomInset = widget.controller.minDifferentSize;
+    _lastFinishedBottomInset = widget.controller.minDifferentSize;
+
     _bottomInsetCheck();
     _ambiguate(WidgetsBinding.instance)!.addObserver(this);
   }
@@ -54,21 +55,30 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
       final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-      if ((bottomInset - _lastBottomInset).abs() >=
-          widget.controller.minDifferentSize) {
-        if (bottomInset < _lastBottomInset &&
-            widget.controller._currentState != false) {
-          _lastBottomInset = bottomInset;
+      if (bottomInset == _lastBottomInset) {
+        // Save max and min value of bottom insets for later comparing.
+        _lastFinishedBottomInset = _lastBottomInset;
 
-          widget.controller._streamController.sink.add(false);
+        // Get keyboard size from max bottom view insets size.
+        if (_lastFinishedBottomInset >= widget.controller.minDifferentSize &&
+            _lastFinishedBottomInset > widget.controller.keyboardSize) {
+          widget.controller._keyboardSize = _lastFinishedBottomInset;
+          widget.controller._isKeyboardSizeLoaded = true;
         }
-        if (bottomInset > _lastBottomInset &&
-            widget.controller._currentState != true) {
-          _lastBottomInset = bottomInset;
-
-          widget.controller._streamController.sink.add(true);
+      } else {
+        if ((bottomInset - _lastFinishedBottomInset).abs() >=
+            widget.controller.minDifferentSize) {
+          if (bottomInset < _lastFinishedBottomInset &&
+              widget.controller._currentState != false) {
+            widget.controller._streamController.sink.add(false);
+          }
+          if (bottomInset > _lastFinishedBottomInset &&
+              widget.controller._currentState != true) {
+            widget.controller._streamController.sink.add(true);
+          }
         }
       }
+      _lastBottomInset = bottomInset;
     });
   }
 

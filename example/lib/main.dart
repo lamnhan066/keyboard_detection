@@ -57,6 +57,12 @@ class _MyAppState extends State<MyApp> {
                 Text(
                   'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
                 ),
+                Text(
+                  'Is keyboard size loaded: ${keyboardDetectionController.isKeyboardSizeLoaded}',
+                ),
+                Text(
+                  'Get keyboard size: ${keyboardDetectionController.keyboardSize}',
+                ),
                 const TextField(),
               ],
             ),

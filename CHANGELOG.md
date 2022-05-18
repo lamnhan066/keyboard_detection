@@ -1,3 +1,9 @@
+## 0.4.0
+
+* [BREAKING CHANGE]: Removed `timerDuration` in `KeyboardDetectionController`.
+* The `minDifferentSize` now works correctly and responses right after the bottom view insets satified the condition. Default value now is set to 100.
+* Added `keyboardSize` and `isKeyboardSizeLoaded` to `KeyboardDetectionController` to get the keyboard size.
+
 ## 0.3.0
 
 * Compatible with Flutter 3.0.

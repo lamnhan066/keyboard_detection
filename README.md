@@ -20,7 +20,7 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
           },
           minDifferentSize: 100,
         ),
-        child: Scaffold(
+       child: Scaffold(
           appBar: AppBar(
             title: const Text('Keyboard Detection'),
           ),
@@ -34,6 +34,12 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
                 Text(
                   'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
                 ),
+                Text(
+                  'Is keyboard size loaded: ${keyboardDetectionController.isKeyboardSizeLoaded}',
+                ),
+                Text(
+                  'Get keyboard size: ${keyboardDetectionController.keyboardSize}',
+                ),
                 const TextField(),
               ],
             ),
@@ -46,11 +52,9 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
 
 `onChanged` will be `true` if the keyboard is visible and `false` otherwise.
 
-`timerDuration` is the time interval between two checks. Default value is 100 milliseconds.
+`minDifferentSize` is the minimum different size of bottom view insets between two checks. Default value is 100.
 
-`minDifferentSize` is the minimum different size of bottom view insets between two checks. Default value is 0.
-
-## Another Way
+## Usage With Controller
 
 You can declare the `controller` outside the `build` method like below:
 
@@ -99,6 +103,12 @@ and add it to `controller` inside `build` method:
                 Text(
                   'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
                 ),
+                Text(
+                  'Is keyboard size loaded: ${keyboardDetectionController.isKeyboardSizeLoaded}',
+                ),
+                Text(
+                  'Get keyboard size: ${keyboardDetectionController.keyboardSize}',
+                ),
                 const TextField(),
               ],
             ),
@@ -114,3 +124,4 @@ You can get the current state of the keyboard visibility by using:
 * `keyboardDetectionController.currentState`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden).
 * `keyboardDetectionController.keyboardState`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visible`: visible, `hidden`: hidden).
 * `keyboardDetectionController.asStream` to listen for keyboard visibility changing events in `bool`.
+* `keyboardDetectionController.keyboardSize` to get the keyboard size. Please notice that this value may returns 0 even when the keyboard state is visible because the keyboard needs time to show up completely. So that, you should call `keyboardDetectionController.isKeyboardSizeLoaded` to checks that the keyboard size is loaded or not.
