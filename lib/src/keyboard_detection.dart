@@ -30,19 +30,17 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
 
   @override
   void initState() {
-    super.initState();
-    // To ensure that the plugin will notify the first state.
+    _ambiguate(WidgetsBinding.instance)!.addObserver(this);
     _lastBottomInset = widget.controller.minDifferentSize;
     _lastFinishedBottomInset = widget.controller.minDifferentSize;
-
     _bottomInsetCheck();
-    _ambiguate(WidgetsBinding.instance)!.addObserver(this);
+    super.initState();
   }
 
   @override
   void dispose() {
-    widget.controller._close();
     _ambiguate(WidgetsBinding.instance)!.removeObserver(this);
+    widget.controller._close();
     super.dispose();
   }
 
@@ -53,6 +51,8 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
 
   void _bottomInsetCheck() {
     _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
+      if (!mounted) return;
+
       final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
       if (bottomInset == _lastBottomInset) {

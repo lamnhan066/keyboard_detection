@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Fixed issue when using `pushAndRemoveUntil` to navigate to another page.
+
 ## 0.4.0
 
 * [BREAKING CHANGE]: Removed `timerDuration` in `KeyboardDetectionController`.
