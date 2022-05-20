@@ -1,6 +1,6 @@
 name: keyboard_detection
 description: This plugin gives you an easy way to detect if the keyboard is visible or not using bottom view insets.
-version: 0.4.1
+version: 0.4.2
 homepage: https://github.com/vursin/keyboard_detection
 
 environment:

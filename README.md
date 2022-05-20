@@ -52,7 +52,7 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
 
 `onChanged` will be `true` if the keyboard is visible and `false` otherwise.
 
-`minDifferentSize` is the minimum different size of bottom view insets between two checks. Default value is 100.
+`minDifferentSize` is the minimum different size of bottom view insets between two checks. Default value is 0.
 
 ## Usage With Controller
 

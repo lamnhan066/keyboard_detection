@@ -7,10 +7,10 @@ class KeyboardDetectionController {
   ///
   /// `onChanged`: This value will be notified when the keyboard is visible (`true`) or not (`false`).
   ///
-  /// `minDifferentSize`: The minimun changed of the bottom view insets to notify. Default value is 100.
+  /// `minDifferentSize`: The minimun changed of the bottom view insets to notify. Default value is 0.
   KeyboardDetectionController({
     this.onChanged,
-    this.minDifferentSize = 100,
+    this.minDifferentSize = 0,
   }) {
     _asStreamSubscription = asStream.listen((currentStateStream) {
       _currentState = currentStateStream;

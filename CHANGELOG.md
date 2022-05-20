@@ -1,3 +1,7 @@
+## 0.4.2
+
+* Changed `minDifferentSize` default value back to 0 to avoid laggy issue.
+
 ## 0.4.1
 
 * Fixed issue when using `pushAndRemoveUntil` to navigate to another page.
