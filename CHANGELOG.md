@@ -1,3 +1,7 @@
+## 0.4.2+1
+
+* Change LICENSE to MIT.
+
 ## 0.4.2
 
 * Changed `minDifferentSize` default value back to 0 to avoid laggy issue.
