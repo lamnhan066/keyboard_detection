@@ -1,3 +1,7 @@
+## 0.4.2+2
+
+* Update README.
+
 ## 0.4.2+1
 
 * Change LICENSE to MIT.

@@ -28,18 +28,6 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
             child: Column(
               children: [
                 Text('Is keyboard visible: $isKeyboardVisible'),
-                Text(
-                  'Get current state: ${keyboardDetectionController.currentState}',
-                ),
-                Text(
-                  'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
-                ),
-                Text(
-                  'Is keyboard size loaded: ${keyboardDetectionController.isKeyboardSizeLoaded}',
-                ),
-                Text(
-                  'Get keyboard size: ${keyboardDetectionController.keyboardSize}',
-                ),
                 const TextField(),
               ],
             ),
