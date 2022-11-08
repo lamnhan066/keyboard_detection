@@ -77,7 +77,15 @@ class KeyboardDetectionController {
   bool? _isKeyboardSizeLoaded;
 
   /// To ensure that the keyboard size is available.
+  ///
+  /// Use [ensureKeyboardSizeLoaded] to ensure that the keyboard is loaded as asynchronous.
   bool get isKeyboardSizeLoaded => _isKeyboardSizeLoaded ?? false;
+
+  // Control the keyboard size state.
+  final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
+
+  /// Ensure that the keyboard size is loaded
+  Future<bool> get ensureKeyboardSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
   /// Close unused variables after dispose. Internal use only.
   void _close() {
@@ -85,11 +93,3 @@ class KeyboardDetectionController {
     _streamController.close();
   }
 }
-
-/// This allows a value of type T or T?
-/// to be treated as a value of type T?.
-///
-/// We use this so that APIs that have become
-/// non-nullable can still be used with `!` and `?`
-/// to support older versions of the API as well.
-T? _ambiguate<T>(T? value) => value;

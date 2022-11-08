@@ -1,3 +1,9 @@
+## 0.5.0
+
+* Add `ensureKeyboardSizeLoaded` to `KeyboardDetectionController` to wait for the keyboard size asynchronous.
+* Increase min sdk version to `2.17.0`.
+* Remove useless code.
+
 ## 0.4.2+3
 
 * Update dependencies.

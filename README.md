@@ -91,11 +91,16 @@ and add it to `controller` inside `build` method:
                 Text(
                   'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
                 ),
-                Text(
-                  'Is keyboard size loaded: ${keyboardDetectionController.isKeyboardSizeLoaded}',
-                ),
-                Text(
-                  'Get keyboard size: ${keyboardDetectionController.keyboardSize}',
+                FutureBuilder(
+                  future: keyboardDetectionController.ensureKeyboardSizeLoaded,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                          'Keyboard size is loaded with size: ${keyboardDetectionController.keyboardSize}');
+                    }
+
+                    return const Text('Keyboard size is still loading');
+                  },
                 ),
                 const TextField(),
               ],
@@ -110,6 +115,9 @@ and add it to `controller` inside `build` method:
 You can get the current state of the keyboard visibility by using:
 
 * `keyboardDetectionController.currentState`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden).
+  
 * `keyboardDetectionController.keyboardState`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visible`: visible, `hidden`: hidden).
+  
 * `keyboardDetectionController.asStream` to listen for keyboard visibility changing events in `bool`.
-* `keyboardDetectionController.keyboardSize` to get the keyboard size. Please notice that this value may returns 0 even when the keyboard state is visible because the keyboard needs time to show up completely. So that, you should call `keyboardDetectionController.isKeyboardSizeLoaded` to checks that the keyboard size is loaded or not.
+  
+* `keyboardDetectionController.keyboardSize` to get the keyboard size. Please notice that this value may returns 0 even when the keyboard state is visible because the keyboard needs time to show up completely. So that, you should call `keyboardDetectionController.isKeyboardSizeLoaded` to checks that the keyboard size is loaded or not. From version `0.5.0`, you can wait for this value by using `await keyboardDetectionController.ensureKeyboardSizeLoaded`.

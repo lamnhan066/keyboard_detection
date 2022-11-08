@@ -30,17 +30,18 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
 
   @override
   void initState() {
-    _ambiguate(WidgetsBinding.instance)!.addObserver(this);
     _lastBottomInset = widget.controller.minDifferentSize;
     _lastFinishedBottomInset = widget.controller.minDifferentSize;
     _bottomInsetCheck();
+
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _ambiguate(WidgetsBinding.instance)!.removeObserver(this);
     widget.controller._close();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -50,7 +51,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
   }
 
   void _bottomInsetCheck() {
-    _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!mounted) return;
 
       final bottomInset = MediaQuery.of(context).viewInsets.bottom;
@@ -64,6 +65,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
             _lastFinishedBottomInset > widget.controller.keyboardSize) {
           widget.controller._keyboardSize = _lastFinishedBottomInset;
           widget.controller._isKeyboardSizeLoaded = true;
+          widget.controller._ensureKeyboardSizeLoaded.complete(true);
         }
       } else {
         if ((bottomInset - _lastFinishedBottomInset).abs() >=

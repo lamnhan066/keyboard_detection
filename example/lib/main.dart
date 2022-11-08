@@ -56,11 +56,16 @@ class _MyAppState extends State<MyApp> {
               Text(
                 'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
               ),
-              Text(
-                'Is keyboard size loaded: ${keyboardDetectionController.isKeyboardSizeLoaded}',
-              ),
-              Text(
-                'Get keyboard size: ${keyboardDetectionController.keyboardSize}',
+              FutureBuilder(
+                future: keyboardDetectionController.ensureKeyboardSizeLoaded,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                        'Keyboard size is loaded with size: ${keyboardDetectionController.keyboardSize}');
+                  }
+
+                  return const Text('Keyboard size is still loading');
+                },
               ),
               const TextField(),
               ElevatedButton(
@@ -68,7 +73,7 @@ class _MyAppState extends State<MyApp> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const AnotherPage(),
+                      builder: (_) => const MyApp(),
                     ),
                   );
                 },
@@ -79,7 +84,7 @@ class _MyAppState extends State<MyApp> {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const AnotherPage(),
+                        builder: (_) => const MyApp(),
                       ),
                       (_) => false);
                 },
@@ -90,30 +95,5 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
-  }
-}
-
-class AnotherPage extends StatelessWidget {
-  const AnotherPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyboardDetection(
-        controller: KeyboardDetectionController(
-          onChanged: (value) {
-            print('Keyboard visibility onChanged: $value');
-          },
-          minDifferentSize: 100,
-        ),
-        child: Scaffold(
-          appBar: AppBar(),
-          body: Center(
-            child: Column(
-              children: const [
-                TextField(),
-              ],
-            ),
-          ),
-        ));
   }
 }
