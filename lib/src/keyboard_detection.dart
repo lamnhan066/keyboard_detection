@@ -65,7 +65,11 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
             _lastFinishedBottomInset > widget.controller.keyboardSize) {
           widget.controller._keyboardSize = _lastFinishedBottomInset;
           widget.controller._isKeyboardSizeLoaded = true;
-          widget.controller._ensureKeyboardSizeLoaded.complete(true);
+
+          // Check if the value is completed or not
+          if (!widget.controller._ensureKeyboardSizeLoaded.isCompleted) {
+            widget.controller._ensureKeyboardSizeLoaded.complete(true);
+          }
         }
       } else {
         if ((bottomInset - _lastFinishedBottomInset).abs() >=

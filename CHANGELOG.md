@@ -1,3 +1,7 @@
+## 0.5.1
+
+* Fixes the issue related to `Future already completed`.
+
 ## 0.5.0
 
 * Add `ensureKeyboardSizeLoaded` to `KeyboardDetectionController` to wait for the keyboard size asynchronous.
