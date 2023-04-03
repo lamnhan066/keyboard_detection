@@ -63,12 +63,14 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
         // Get keyboard size from max bottom view insets size.
         if (_lastFinishedBottomInset >= widget.controller.minDifferentSize &&
             _lastFinishedBottomInset > widget.controller.keyboardSize) {
-          widget.controller._keyboardSize = _lastFinishedBottomInset;
-          widget.controller._isKeyboardSizeLoaded = true;
+          KeyboardDetectionController._keyboardSize = _lastFinishedBottomInset;
+          KeyboardDetectionController._isKeyboardSizeLoaded = true;
 
           // Check if the value is completed or not
-          if (!widget.controller._ensureKeyboardSizeLoaded.isCompleted) {
-            widget.controller._ensureKeyboardSizeLoaded.complete(true);
+          if (!KeyboardDetectionController
+              ._ensureKeyboardSizeLoaded.isCompleted) {
+            KeyboardDetectionController._ensureKeyboardSizeLoaded
+                .complete(true);
           }
         }
       } else {

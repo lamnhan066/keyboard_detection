@@ -22,7 +22,7 @@ class KeyboardDetectionController {
   }
 
   /// This value will be notified when the keyboard is visible (`true`) or not (`false`).
-  final Function(bool)? onChanged;
+  final void Function(bool)? onChanged;
 
   /// The minimun difference between the current size and the last size of bottom view inset.
   ///
@@ -62,7 +62,7 @@ class KeyboardDetectionController {
           : KeyboardState.hidden;
 
   // Control the size of keyboard.
-  double? _keyboardSize;
+  static double? _keyboardSize;
 
   /// Get the keyboard size. The keyboard must be visible at least 1 time to make this works.
   /// If not, this value will return 0. You can check to ensure the keyboard size is available
@@ -74,7 +74,7 @@ class KeyboardDetectionController {
   double get keyboardSize => _keyboardSize ?? 0;
 
   // Control the keyboard size state.
-  bool? _isKeyboardSizeLoaded;
+  static bool? _isKeyboardSizeLoaded;
 
   /// To ensure that the keyboard size is available.
   ///
@@ -82,7 +82,7 @@ class KeyboardDetectionController {
   bool get isKeyboardSizeLoaded => _isKeyboardSizeLoaded ?? false;
 
   // Control the keyboard size state.
-  final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
+  static final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
 
   /// Ensure that the keyboard size is loaded
   Future<bool> get ensureKeyboardSizeLoaded => _ensureKeyboardSizeLoaded.future;
