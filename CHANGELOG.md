@@ -1,3 +1,8 @@
+## 0.5.2
+
+* Update `onChanged` return type to `void`.
+* Use static variables to store keyboard size and ensure keyboard is loaded. (Just internal changing so don't affect to the current code).
+
 ## 0.5.1
 
 * Fixes the issue related to `Future already completed`.
