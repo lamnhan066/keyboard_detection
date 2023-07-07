@@ -1,67 +1,116 @@
 part of 'keyboard_detection.dart';
 
-enum KeyboardState { unknown, visible, hidden }
+enum KeyboardState {
+  /// Unknow state
+  unknown,
+
+  /// Completely visible
+  visible,
+
+  /// Visibling
+  visibling,
+
+  /// Completely hidden
+  hidden,
+
+  /// Hiding
+  hiding;
+}
 
 class KeyboardDetectionController {
   /// Controller of the keyboard visibility.
   ///
   /// `onChanged`: This value will be notified when the keyboard is visible (`true`) or not (`false`).
-  ///
-  /// `minDifferentSize`: The minimun changed of the bottom view insets to notify. Default value is 0.
   KeyboardDetectionController({
     this.onChanged,
     this.minDifferentSize = 0,
-  }) {
-    _asStreamSubscription = asStream.listen((currentStateStream) {
-      _currentState = currentStateStream;
+  });
 
-      if (onChanged != null) {
-        onChanged!(currentStateStream);
-      }
-    });
-  }
-
-  /// This value will be notified when the keyboard is visible (`true`) or not (`false`).
-  final void Function(bool)? onChanged;
+  /// This value will be notified when the keyboard is starting visible (`true`) or not (`false`).
+  final void Function(KeyboardState state)? onChanged;
 
   /// The minimun difference between the current size and the last size of bottom view inset.
   ///
   /// When the keyboard's showing up, the size of bottom view inset will be changed
   /// and the plugin will use `minDifferentSize` to compare the changing of size
   /// to notify the keyboard visibility.
+  @Deprecated('This parameter is not used anymore.')
   final double minDifferentSize;
 
   /// Controller for the keyboard visibility stream.
-  final StreamController<bool> _streamController = StreamController.broadcast();
-
-  /// Control the asStream listener.
-  StreamSubscription<bool>? _asStreamSubscription;
+  final StreamController<KeyboardState> _streamOnChangedController =
+      StreamController.broadcast();
 
   /// Get the current keyboard state stream.
-  Stream<bool> get asStream => _streamController.stream.asBroadcastStream();
+  @Deprecated('Use [stream] insteads.')
+  Stream<bool> get asStream => _streamOnChangedController.stream.map((event) {
+        if (event == KeyboardState.hidden || event == KeyboardState.hiding) {
+          return false;
+        }
 
-  /// Control the state of the keyboard visibility.
-  bool? _currentState;
+        return true;
+      });
+
+  /// Get the current keyboard state stream.
+  Stream<KeyboardState> get stream =>
+      _streamOnChangedController.stream.asBroadcastStream();
 
   /// Get current state of the keyboard visibility.
   ///
   /// `null`: Unknown state because the plugin isn't initialized.
-  /// `true`: Visible.
-  /// `false`: Hidden (not visible).
-  bool? get currentState => _currentState;
+  /// `true`: Visibling or Visible.
+  /// `false`: Hidding or Hidden (not visible).
+  @Deprecated('Use [stateAsBool] insteads')
+  bool? get currentState => stateAsBool;
 
-  /// Get current state of the keyboard visibility is `KeyboardState`.
+  /// Control the state as bool
+  bool? _stateAsBool;
+
+  /// Get current state of the keyboard visibility.
   ///
-  /// `KeyboardState.unknown`: Unknown state because the plugin isn't initialized.
-  /// `KeyboardState.visible`: Visible.
-  /// `KeyboardState.hidden`: Hidden (not visible).
-  KeyboardState get keyboardState => _currentState == null
-      ? KeyboardState.unknown
-      : _currentState!
-          ? KeyboardState.visible
-          : KeyboardState.hidden;
+  /// `null`: Unknown state because the plugin isn't initialized.
+  /// `true`: Completely visible.
+  /// `false`: Completely hidden (not visible).
+  bool? get stateAsBool {
+    if (_state == KeyboardState.unknown) {
+      _stateAsBool = null;
+    }
 
-  // Control the size of keyboard.
+    if (_state == KeyboardState.visible && _stateAsBool != true) {
+      _stateAsBool = true;
+    }
+
+    if (_state == KeyboardState.hidden && _stateAsBool != false) {
+      _stateAsBool = false;
+    }
+
+    return _stateAsBool;
+  }
+
+  /// Control the state of keyboard.
+  // ignore: prefer_final_fields
+  KeyboardState _state = KeyboardState.unknown;
+
+  /// State of the Keyboard
+  ///
+  /// `unknown`
+  /// `visibling`
+  /// `visible`
+  /// `hidding`
+  /// `hidden`
+  @Deprecated('Use [state] insteads.')
+  KeyboardState get keyboardState => _state;
+
+  /// State of the Keyboard
+  ///
+  /// `unknown`
+  /// `visibling`
+  /// `visible`
+  /// `hidding`
+  /// `hidden`
+  KeyboardState get state => _state;
+
+  /// Control the size of keyboard.
   static double? _keyboardSize;
 
   /// Get the keyboard size. The keyboard must be visible at least 1 time to make this works.
@@ -88,8 +137,7 @@ class KeyboardDetectionController {
   Future<bool> get ensureKeyboardSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
   /// Close unused variables after dispose. Internal use only.
-  void _close() {
-    _asStreamSubscription?.cancel();
-    _streamController.close();
+  Future<void> _close() async {
+    await _streamOnChangedController.close();
   }
 }
