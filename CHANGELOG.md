@@ -1,3 +1,8 @@
+## 0.6.0-rc.2
+
+* `ensureSizeLoaded` is now return `Future<void>`.
+* Update README.
+
 ## 0.6.0-rc.1
 
 * Change sdk version to ">=2.18.0 <4.0.0" and flutter version ">=3.3.0".

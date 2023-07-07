@@ -154,7 +154,7 @@ class KeyboardDetectionController {
   Future<bool> get ensureKeyboardSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
   /// Ensure that the keyboard size is loaded
-  Future<bool> get ensureSizeLoaded => _ensureKeyboardSizeLoaded.future;
+  Future<void> get ensureSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
   /// Close unused variables after dispose. Internal use only.
   Future<void> _close() async {

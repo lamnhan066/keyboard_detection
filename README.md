@@ -4,7 +4,7 @@ This plugin gives you an easy way to detect if the keyboard is visible or not. I
 
 ## Introduction
 
-![Alt Text](https://raw.githubusercontent.com/vnniz/features_tour/main/assets/KeyboardDetectionIntro.webp)
+![Alt Text](https://raw.githubusercontent.com/vnniz/keyboard_detection/main/assets/KeyboardDetectionIntro.webp)
 
 ## Simple Usage
 
@@ -42,9 +42,7 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
   }
 ```
 
-`onChanged` will be `true` if the keyboard is visible and `false` otherwise.
-
-`minDifferentSize` is the minimum different size of bottom view insets between two checks. Default value is 0.
+`onChanged` will be returned in enum `KeyboardState` (`unknown`: unknown, `visibling`: visibling, `visible`: visible, `hiding`: hiding, `hidden`: hidden).
 
 ## Usage With Controller
 
