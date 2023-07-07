@@ -15,7 +15,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isKeyboardVisible = false;
+  KeyboardState keyboardState = KeyboardState.unknown;
+  bool? stateAsBool;
 
   late KeyboardDetectionController keyboardDetectionController;
 
@@ -25,14 +26,15 @@ class _MyAppState extends State<MyApp> {
       onChanged: (value) {
         print('Keyboard visibility onChanged: $value');
         setState(() {
-          isKeyboardVisible = value;
+          keyboardState = value;
+          stateAsBool = keyboardDetectionController.stateAsBool;
         });
       },
-      minDifferentSize: 100,
+      minDifferentSize: 1,
     );
 
-    keyboardDetectionController.asStream.listen((isVisible) {
-      print('Listen from stream: $isVisible');
+    keyboardDetectionController.stream.listen((state) {
+      print('Listen to onChanged: $state');
     });
 
     super.initState();
@@ -47,50 +49,49 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Keyboard Detection'),
         ),
         body: Center(
-          child: Column(
-            children: [
-              Text('Is keyboard visible: $isKeyboardVisible'),
-              Text(
-                'Get current state: ${keyboardDetectionController.currentState}',
-              ),
-              Text(
-                'Get current KeyboardState: ${keyboardDetectionController.keyboardState}',
-              ),
-              FutureBuilder(
-                future: keyboardDetectionController.ensureKeyboardSizeLoaded,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                        'Keyboard size is loaded with size: ${keyboardDetectionController.keyboardSize}');
-                  }
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('State: $keyboardState'),
+                Text('State as bool: $stateAsBool'),
+                FutureBuilder(
+                  future: keyboardDetectionController.ensureKeyboardSizeLoaded,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                          'Keyboard size is loaded with size: ${keyboardDetectionController.keyboardSize}');
+                    }
 
-                  return const Text('Keyboard size is still loading');
-                },
-              ),
-              const TextField(),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MyApp(),
-                    ),
-                  );
-                },
-                child: const Text('Navigate to another page'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
+                    return const Text('Keyboard size is still loading');
+                  },
+                ),
+                const TextField(),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => const MyApp(),
                       ),
-                      (_) => false);
-                },
-                child: const Text('Move to another page'),
-              )
-            ],
+                    );
+                  },
+                  child: const Text('Navigate to another page'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyApp(),
+                        ),
+                        (_) => false);
+                  },
+                  child: const Text('Move to another page'),
+                )
+              ],
+            ),
           ),
         ),
       ),
