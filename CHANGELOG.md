@@ -1,3 +1,11 @@
+## 0.6.0-rc.1
+
+* Change sdk version to ">=2.18.0 <4.0.0" and flutter version ">=3.3.0".
+* Add visibling and hiding to KeyboardState
+* Deprecate `minDifferentSize`, `asStream`, `currentState`, `keyboardState`, `keyboardSize`, `isKeyboardSizeLoaded`, `ensureKeyboardSizeLoaded`
+* Add `state`, `stateAsBool`, `size`, `isSizeLoaded`, `ensureSizeLoaded`
+* Change the parameter of `onChanged` from `bool` to `KeyboardState`
+
 ## 0.5.2
 
 * Update `onChanged` return type to `void`.
