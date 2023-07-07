@@ -57,11 +57,11 @@ class _MyAppState extends State<MyApp> {
                 Text('State: $keyboardState'),
                 Text('State as bool: $stateAsBool'),
                 FutureBuilder(
-                  future: keyboardDetectionController.ensureKeyboardSizeLoaded,
+                  future: keyboardDetectionController.ensureSizeLoaded,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Text(
-                          'Keyboard size is loaded with size: ${keyboardDetectionController.keyboardSize}');
+                          'Keyboard size is loaded with size: ${keyboardDetectionController.size}');
                     }
 
                     return const Text('Keyboard size is still loading');
