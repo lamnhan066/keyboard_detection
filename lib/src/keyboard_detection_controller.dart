@@ -120,7 +120,17 @@ class KeyboardDetectionController {
   /// [NOTICE]: This value may be loaded after the keyboard visibility a little bit
   /// because the keyboard needs more time to be showed up completely. So that this value
   /// may still 0 when the `KeyboardState` is `visible`.
+  @Deprecated('Use [size] insteads')
   double get keyboardSize => _keyboardSize ?? 0;
+
+  /// Get the keyboard size. The keyboard must be visible at least 1 time to make this works.
+  /// If not, this value will return 0. You can check to ensure the keyboard size is available
+  /// via `isKeyboardSizeLoaded`.
+  ///
+  /// [NOTICE]: This value may be loaded after the keyboard visibility a little bit
+  /// because the keyboard needs more time to be showed up completely. So that this value
+  /// may still 0 when the `KeyboardState` is `visible`.
+  double get size => _keyboardSize ?? 0;
 
   // Control the keyboard size state.
   static bool? _isKeyboardSizeLoaded;
@@ -128,13 +138,23 @@ class KeyboardDetectionController {
   /// To ensure that the keyboard size is available.
   ///
   /// Use [ensureKeyboardSizeLoaded] to ensure that the keyboard is loaded as asynchronous.
+  @Deprecated('Use [isSizeLoaded] insteads')
   bool get isKeyboardSizeLoaded => _isKeyboardSizeLoaded ?? false;
 
-  // Control the keyboard size state.
+  /// To ensure that the keyboard size is available.
+  ///
+  /// Use [ensureSizeLoaded] to ensure that the keyboard is loaded as asynchronous.
+  bool get isSizeLoaded => _isKeyboardSizeLoaded ?? false;
+
+  /// Control the keyboard size state.
   static final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
 
   /// Ensure that the keyboard size is loaded
+  @Deprecated('Use [ensureSizeLoaded] insteads')
   Future<bool> get ensureKeyboardSizeLoaded => _ensureKeyboardSizeLoaded.future;
+
+  /// Ensure that the keyboard size is loaded
+  Future<bool> get ensureSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
   /// Close unused variables after dispose. Internal use only.
   Future<void> _close() async {
