@@ -24,15 +24,20 @@ class KeyboardDetection extends StatefulWidget {
 
 class _KeyboardDetectionState extends State<KeyboardDetection>
     with WidgetsBindingObserver {
-  // Initial value to ensure onChanged will recieve the first state.
-  double _lastBottomInset = 1;
-  double _lastFinishedBottomInset = 1;
+  static const int maxSameInsetsCounter = 5;
+  static const int delayBettweenTwoCheck = 10; // milliseconds
+
+  double lastBottomInset = 0;
+  double lastFinishedBottomInset = 0;
+
+  bool isSizeChecking = false;
+  int sameInsetsCounter = 0;
 
   @override
   void initState() {
-    _lastBottomInset = widget.controller.minDifferentSize;
-    _lastFinishedBottomInset = widget.controller.minDifferentSize;
-    _bottomInsetCheck();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      bottomInsetsCheck();
+    });
 
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -47,47 +52,99 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
 
   @override
   void didChangeMetrics() {
-    _bottomInsetCheck();
+    bottomInsetsCheck();
   }
 
-  void _bottomInsetCheck() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!mounted) return;
+  /// Listen to the changing metrics until the keyboard is completely
+  /// visible or hidden
+  void bottomInsetsCheck() {
+    if (isSizeChecking) return;
+    isSizeChecking = true;
 
-      final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    Timer.periodic(
+      const Duration(milliseconds: delayBettweenTwoCheck),
+      (timer) {
+        _bottomInsetsCheck();
 
-      if (bottomInset == _lastBottomInset) {
-        // Save max and min value of bottom insets for later comparing.
-        _lastFinishedBottomInset = _lastBottomInset;
-
-        // Get keyboard size from max bottom view insets size.
-        if (_lastFinishedBottomInset >= widget.controller.minDifferentSize &&
-            _lastFinishedBottomInset > widget.controller.keyboardSize) {
-          KeyboardDetectionController._keyboardSize = _lastFinishedBottomInset;
-          KeyboardDetectionController._isKeyboardSizeLoaded = true;
-
-          // Check if the value is completed or not
-          if (!KeyboardDetectionController
-              ._ensureKeyboardSizeLoaded.isCompleted) {
-            KeyboardDetectionController._ensureKeyboardSizeLoaded
-                .complete(true);
-          }
+        if (widget.controller.state == KeyboardState.hidden ||
+            widget.controller.state == KeyboardState.visible) {
+          timer.cancel();
+          isSizeChecking = false;
         }
-      } else {
-        if ((bottomInset - _lastFinishedBottomInset).abs() >=
-            widget.controller.minDifferentSize) {
-          if (bottomInset < _lastFinishedBottomInset &&
-              widget.controller._currentState != false) {
-            widget.controller._streamController.sink.add(false);
-          }
-          if (bottomInset > _lastFinishedBottomInset &&
-              widget.controller._currentState != true) {
-            widget.controller._streamController.sink.add(true);
-          }
+      },
+    );
+  }
+
+  void _bottomInsetsCheck() {
+    if (!mounted) {
+      return;
+    }
+
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final controller = widget.controller;
+
+    if (bottomInset == lastBottomInset) {
+      // Save max and min value of bottom insets for later comparing.
+      lastFinishedBottomInset = lastBottomInset;
+
+      // Increase the counter
+      sameInsetsCounter++;
+
+      // Get keyboard size from max bottom view insets size.
+      if (lastFinishedBottomInset > controller.keyboardSize) {
+        KeyboardDetectionController._keyboardSize = lastFinishedBottomInset;
+      }
+
+      if (sameInsetsCounter >= maxSameInsetsCounter) {
+        // Mark that the keyboard size is loaded
+        if (!KeyboardDetectionController
+                ._ensureKeyboardSizeLoaded.isCompleted &&
+            controller.keyboardSize > 0) {
+          KeyboardDetectionController._isKeyboardSizeLoaded = true;
+          KeyboardDetectionController._ensureKeyboardSizeLoaded.complete(true);
+        }
+
+        // If the bottom insets size is 0 => No keyboard visible
+        if (bottomInset == 0 && controller._state != KeyboardState.hidden) {
+          _setKeyboardState(KeyboardState.hidden);
+        }
+
+        // If the bottom insets size >
+        if (controller.isKeyboardSizeLoaded &&
+            bottomInset > 0 &&
+            controller._state != KeyboardState.visible) {
+          _setKeyboardState(KeyboardState.visible);
+        }
+
+        // Reset the counter when it's done
+        sameInsetsCounter = 0;
+      }
+    } else {
+      // Reset the counter when there is different bettween 2 checks
+      sameInsetsCounter = 0;
+
+      if ((bottomInset - lastFinishedBottomInset).abs() > 0) {
+        if (bottomInset < lastFinishedBottomInset &&
+            controller._state != KeyboardState.hiding &&
+            controller._state != KeyboardState.hidden) {
+          _setKeyboardState(KeyboardState.hiding);
+        }
+        if (bottomInset > lastFinishedBottomInset &&
+            controller._state != KeyboardState.visibling &&
+            controller._state != KeyboardState.visible) {
+          _setKeyboardState(KeyboardState.visibling);
         }
       }
-      _lastBottomInset = bottomInset;
-    });
+    }
+    lastBottomInset = bottomInset;
+  }
+
+  void _setKeyboardState(KeyboardState state) {
+    widget.controller._state = state;
+    widget.controller._streamOnChangedController.sink.add(state);
+    if (widget.controller.onChanged != null) {
+      widget.controller.onChanged!(state);
+    }
   }
 
   @override
