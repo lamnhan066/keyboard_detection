@@ -4,7 +4,7 @@ This plugin gives you an easy way to detect if the keyboard is visible or not. I
 
 ## Introduction
 
-![Alt Text](https://raw.githubusercontent.com/vnniz/keyboard_detection/main/assets/KeyboardDetectionIntro.webp)
+![Alt Text](https://raw.githubusercontent.com/vnniz/keyboard_detection/main/assets/Intro.webp)
 
 ## Simple Usage
 
@@ -20,7 +20,9 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
             print('Keyboard visibility onChanged: $value');
             setState(() {
               keyboardState = value;
-              stateAsBool = keyboardDetectionController.stateAsBool;
+              stateAsBool = keyboardDetectionController.stateAsBool();
+              stateAsBoolWithParamTrue =
+                  keyboardDetectionController.stateAsBool(true);
             });
           },
         ),
@@ -32,6 +34,10 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
             child: Column(
               children: [
                 Text('State: $keyboardState'),
+                Text(
+                    'State as bool (isIncludeStartChanging = false): $stateAsBool'),
+                Text(
+                    'State as bool (isIncludeStartChanging = true): $stateAsBoolWithParamTrue'),
                 const TextField(),
               ],
             ),
@@ -58,7 +64,9 @@ void initState() {
       print('Keyboard visibility onChanged: $value');
       setState(() {
         keyboardState = value;
-        stateAsBool = keyboardDetectionController.stateAsBool;
+        stateAsBool = keyboardDetectionController.stateAsBool();
+        stateAsBoolWithParamTrue =
+                  keyboardDetectionController.stateAsBool(true);
       });
     },
   );
@@ -89,7 +97,8 @@ Widget build(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('State: $keyboardState'),
-              Text('State as bool: $stateAsBool'),
+              Text('State as bool (isIncludeStartChanging = false): $stateAsBool'),
+              Text('State as bool (isIncludeStartChanging = true): $stateAsBoolWithParamTrue'),
               FutureBuilder(
                 future: keyboardDetectionController.ensureKeyboardSizeLoaded,
                 builder: (context, snapshot) {
@@ -137,7 +146,7 @@ You can get the current state of the keyboard visibility by using:
 
 * `keyboardDetectionController.state`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visibling`: visibling, `visible`: visible, `hiding`: hiding, `hidden`: hidden).
 
-* `keyboardDetectionController.stateAsBool`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: completely visible, `false`: completely hidden).
+* `keyboardDetectionController.stateAsBool([bool isIncludeStartChanging = false])`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden). If the `isIncludeStartChanging` is `true` than it will return `true` even when the `state` is `visibling` and `false` when it's `hiding`.
   
 * `keyboardDetectionController.stream` to listen for keyboard visibility changing events in `KeyboardState`.
   

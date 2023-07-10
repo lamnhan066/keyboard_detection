@@ -17,6 +17,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   KeyboardState keyboardState = KeyboardState.unknown;
   bool? stateAsBool;
+  bool? stateAsBoolWithParamTrue;
 
   late KeyboardDetectionController keyboardDetectionController;
 
@@ -27,10 +28,11 @@ class _MyAppState extends State<MyApp> {
         print('Keyboard visibility onChanged: $value');
         setState(() {
           keyboardState = value;
-          stateAsBool = keyboardDetectionController.stateAsBool;
+          stateAsBool = keyboardDetectionController.stateAsBool();
+          stateAsBoolWithParamTrue =
+              keyboardDetectionController.stateAsBool(true);
         });
       },
-      minDifferentSize: 1,
     );
 
     keyboardDetectionController.stream.listen((state) {
@@ -55,7 +57,10 @@ class _MyAppState extends State<MyApp> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('State: $keyboardState'),
-                Text('State as bool: $stateAsBool'),
+                Text(
+                    'State as bool (isIncludeStartChanging = false): $stateAsBool'),
+                Text(
+                    'State as bool (isIncludeStartChanging = true): $stateAsBoolWithParamTrue'),
                 FutureBuilder(
                   future: keyboardDetectionController.ensureSizeLoaded,
                   builder: (context, snapshot) {
