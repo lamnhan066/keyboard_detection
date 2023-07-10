@@ -44,11 +44,12 @@ class KeyboardDetectionController {
   /// Get the current keyboard state stream.
   @Deprecated('Use [stream] insteads.')
   Stream<bool> get asStream => _streamOnChangedController.stream.map((event) {
-        if (event == KeyboardState.hidden || event == KeyboardState.hiding) {
-          return false;
+        if (event == KeyboardState.visible ||
+            event == KeyboardState.visibling) {
+          return true;
         }
 
-        return true;
+        return false;
       });
 
   /// Get the current keyboard state stream.
@@ -61,19 +62,34 @@ class KeyboardDetectionController {
   /// `true`: Visibling or Visible.
   /// `false`: Hidding or Hidden (not visible).
   @Deprecated('Use [stateAsBool] insteads')
-  bool? get currentState => stateAsBool;
+  bool? get currentState => stateAsBool(true);
 
   /// Control the state as bool
   bool? _stateAsBool;
 
   /// Get current state of the keyboard visibility.
   ///
-  /// `null`: Unknown state because the plugin isn't initialized.
-  /// `true`: Completely visible.
-  /// `false`: Completely hidden (not visible).
-  bool? get stateAsBool {
+  /// Returns:
+  ///   `null`: Unknown state because the plugin isn't initialized.
+  ///   [isIncludeStartChanging] == `false`:
+  ///     - `true`: [KeyboardState.visible]
+  ///     - `false`: [KeyboardState.hidden]
+  ///   [isIncludeStartChanging] == `true`:
+  ///     - `true`: [KeyboardState.visibling] or [KeyboardState.visible]
+  ///     - `false`: [KeyboardState.hiding] or [KeyboardState.hidden]
+  bool? stateAsBool([bool isIncludeStartChanging = false]) {
     if (_state == KeyboardState.unknown) {
       _stateAsBool = null;
+    }
+
+    if (isIncludeStartChanging) {
+      if (_state == KeyboardState.visibling && _stateAsBool != true) {
+        _stateAsBool = true;
+      }
+
+      if (_state == KeyboardState.hiding && _stateAsBool != false) {
+        _stateAsBool = false;
+      }
     }
 
     if (_state == KeyboardState.visible && _stateAsBool != true) {
