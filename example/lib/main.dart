@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:keyboard_detection/keyboard_detection.dart';
 
@@ -19,6 +21,8 @@ class _MyAppState extends State<MyApp> {
   bool? stateAsBool;
   bool? stateAsBoolWithParamTrue;
 
+  StreamSubscription<KeyboardState>? _sub;
+
   late KeyboardDetectionController keyboardDetectionController;
 
   @override
@@ -35,11 +39,24 @@ class _MyAppState extends State<MyApp> {
       },
     );
 
-    keyboardDetectionController.stream.listen((state) {
-      print('Listen to onChanged: $state');
+    _sub = keyboardDetectionController.stream.listen((state) {
+      print('Listen to onChanged with Stream: $state');
+    });
+
+    keyboardDetectionController.addCallback((state) {
+      print('Listen to onChanged with Callback: $state');
+
+      // End this callback by returning false
+      return false;
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
   }
 
   @override
