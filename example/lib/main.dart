@@ -43,11 +43,29 @@ class _MyAppState extends State<MyApp> {
       print('Listen to onChanged with Stream: $state');
     });
 
+    // One time callback
     keyboardDetectionController.addCallback((state) {
-      print('Listen to onChanged with Callback: $state');
+      print('Listen to onChanged with one time Callback: $state');
 
       // End this callback by returning false
       return false;
+    });
+
+    // Looped callback
+    keyboardDetectionController.addCallback((state) {
+      print('Listen to onChanged with looped Callback: $state');
+
+      // This callback will be looped
+      return true;
+    });
+
+    // Looped with future callback
+    keyboardDetectionController.addCallback((state) async {
+      await Future.delayed(const Duration(milliseconds: 100));
+      print('Listen to onChanged with looped future Callback: $state');
+
+      // This callback will be looped
+      return true;
     });
 
     super.initState();

@@ -1,8 +1,12 @@
+## 0.6.0-rc.5
+
+* Add method `addCallback` to add a callback to receive keyboard state changed events.
+
 ## 0.6.0-rc.4
 
 * Change from `stateAsBool` to `stateAsBool([bool isIncludeStartChanging = false])`.
-* Update screenshot
-* Update README
+* Update screenshot.
+* Update README.
 
 ## 0.6.0-rc.3
 
