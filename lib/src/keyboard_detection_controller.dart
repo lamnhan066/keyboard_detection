@@ -17,6 +17,9 @@ enum KeyboardState {
   hiding;
 }
 
+typedef KeyboardDetectionCallback = FutureOr<bool> Function(
+    KeyboardState state);
+
 class KeyboardDetectionController {
   /// Controller of the keyboard visibility.
   ///
@@ -37,6 +40,8 @@ class KeyboardDetectionController {
   @Deprecated('This parameter is not used anymore.')
   final double minDifferentSize;
 
+  final List<KeyboardDetectionCallback> _keyboardDetectionCallbacks = [];
+
   /// Controller for the keyboard visibility stream.
   final StreamController<KeyboardState> _streamOnChangedController =
       StreamController.broadcast();
@@ -53,6 +58,9 @@ class KeyboardDetectionController {
       });
 
   /// Get the current keyboard state stream.
+  ///
+  /// You can use [addCallback] to add a function as a callback to avoid forgeting
+  /// to close the subscription.
   Stream<KeyboardState> get stream =>
       _streamOnChangedController.stream.asBroadcastStream();
 
@@ -171,6 +179,24 @@ class KeyboardDetectionController {
 
   /// Ensure that the keyboard size is loaded
   Future<void> get ensureSizeLoaded => _ensureKeyboardSizeLoaded.future;
+
+  /// Add callback to be executed when the keyboard state changes.
+  ///
+  /// This callback will be notified when the keyboard state is changed
+  /// until it returns `false`.
+  void addCallback(KeyboardDetectionCallback callback) {
+    _keyboardDetectionCallbacks.add(callback);
+  }
+
+  void _excuteCallbacks(KeyboardState state) {
+    for (final callback in _keyboardDetectionCallbacks) {
+      final Completer<bool> completer = Completer();
+      completer.future.then((isLooped) {
+        if (!isLooped) _keyboardDetectionCallbacks.remove(callback);
+      });
+      completer.complete(callback(state));
+    }
+  }
 
   /// Close unused variables after dispose. Internal use only.
   Future<void> _close() async {

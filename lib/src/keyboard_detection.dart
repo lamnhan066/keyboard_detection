@@ -145,6 +145,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     if (widget.controller.onChanged != null) {
       widget.controller.onChanged!(state);
     }
+    widget.controller._excuteCallbacks(state);
   }
 
   @override
