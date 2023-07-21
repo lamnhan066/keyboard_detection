@@ -1,10 +1,10 @@
+## 0.6.1
+
+* Release to stable.
+
 ## 0.6.0-rc.5
 
 * Add method `addCallback` to add a callback to receive keyboard state changed events.
-
-## 0.6.0
-
-* Release to stable.
 
 ## 0.6.0-rc.4
 

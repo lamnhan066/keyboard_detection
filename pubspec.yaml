@@ -1,6 +1,6 @@
 name: keyboard_detection
 description: This plugin gives you an easy way to detect the keyboard visibility.
-version: 0.6.0
+version: 0.6.1
 homepage: https://github.com/vnniz/keyboard_detection
 
 screenshots:
