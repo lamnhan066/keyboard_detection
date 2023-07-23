@@ -1,6 +1,18 @@
-## 0.6.1
+## 0.6.2
 
 * Release to stable.
+* Add `visibling` and `hiding` to `KeyboardState`.
+* Add `stateAsBool()` to get the current keyboard state as `bool`
+* Change the parameter of `onChanged` from `bool` to `KeyboardState`.
+* **Deprecated**:
+  * Change sdk version to ">=2.18.0 <4.0.0".
+  * `asStream` => `stream` or `addCallback`
+  * `currentState` => `state` as `KeyboardState`
+  * `keyboardSize` => `size`
+  * `isKeyboardSizeLoaded` => `isSizeLoaded`
+  * `ensureKeyboardSizeLoaded` => `ensureSizeLoaded`
+  * `minDifferentSize` no need to use
+  * `keyboardState` no need to use
 
 ## 0.6.0-rc.5
 

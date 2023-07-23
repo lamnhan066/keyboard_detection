@@ -1,6 +1,6 @@
 name: keyboard_detection
 description: This plugin gives you an easy way to detect the keyboard visibility.
-version: 0.6.1
+version: 0.6.2
 homepage: https://github.com/vnniz/keyboard_detection
 
 screenshots:
@@ -9,7 +9,6 @@ screenshots:
 
 environment:
   sdk: ">=2.18.0 <4.0.0"
-  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
