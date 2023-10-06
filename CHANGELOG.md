@@ -1,3 +1,8 @@
+## 0.6.3
+
+* Update comments.
+* Update homepage URL.
+
 ## 0.6.2
 
 * Release to stable.

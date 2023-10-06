@@ -1,19 +1,19 @@
 part of 'keyboard_detection.dart';
 
 enum KeyboardState {
-  /// Unknow state
+  /// Unknow state.
   unknown,
 
-  /// Completely visible
+  /// Completely visible.
   visible,
 
-  /// Visibling
+  /// Visibling.
   visibling,
 
-  /// Completely hidden
+  /// Completely hidden.
   hidden,
 
-  /// Hiding
+  /// Hiding.
   hiding;
 }
 
@@ -173,11 +173,11 @@ class KeyboardDetectionController {
   /// Control the keyboard size state.
   static final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
 
-  /// Ensure that the keyboard size is loaded
+  /// Ensure that the keyboard size is loaded.
   @Deprecated('Use [ensureSizeLoaded] insteads')
   Future<bool> get ensureKeyboardSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
-  /// Ensure that the keyboard size is loaded
+  /// Ensure that the keyboard size is loaded.
   Future<void> get ensureSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
   /// Add callback to be executed when the keyboard state changes.
