@@ -7,10 +7,10 @@ part 'keyboard_detection_controller.dart';
 class KeyboardDetection extends StatefulWidget {
   /// This function uses the resizing of the bottom view inset to check the the keyboard visibility.
   const KeyboardDetection({
-    Key? key,
+    super.key,
     required this.controller,
     required this.child,
-  }) : super(key: key);
+  });
 
   /// The controller of the Keyboard Detection.
   final KeyboardDetectionController controller;
@@ -35,11 +35,11 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       bottomInsetsCheck();
     });
 
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
