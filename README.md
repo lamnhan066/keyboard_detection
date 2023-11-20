@@ -4,7 +4,7 @@ This plugin gives you an easy way to detect if the keyboard is visible or not. I
 
 ## Introduction
 
-![Alt Text](https://raw.githubusercontent.com/vnniz/keyboard_detection/main/assets/Intro.webp)
+<img src="https://raw.githubusercontent.com/vnniz/keyboard_detection/main/assets/Intro.webp" alt="Alt Text" width="300"/>
 
 ## Simple Usage
 
@@ -35,9 +35,9 @@ You just need to wrap the `Scaffold` with `KeyboardDetection` like below and lis
               children: [
                 Text('State: $keyboardState'),
                 Text(
-                    'State as bool (isIncludeStartChanging = false): $stateAsBool'),
+                    'State as bool (includeTransitionalState = false): $stateAsBool'),
                 Text(
-                    'State as bool (isIncludeStartChanging = true): $stateAsBoolWithParamTrue'),
+                    'State as bool (includeTransitionalState = true): $stateAsBoolWithParamTrue'),
                 const TextField(),
               ],
             ),
@@ -123,8 +123,8 @@ Widget build(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('State: $keyboardState'),
-              Text('State as bool (isIncludeStartChanging = false): $stateAsBool'),
-              Text('State as bool (isIncludeStartChanging = true): $stateAsBoolWithParamTrue'),
+              Text('State as bool (includeTransitionalState = false): $stateAsBool'),
+              Text('State as bool (includeTransitionalState = true): $stateAsBoolWithParamTrue'),
               FutureBuilder(
                 future: keyboardDetectionController.ensureKeyboardSizeLoaded,
                 builder: (context, snapshot) {
@@ -172,7 +172,7 @@ You can get the current state of the keyboard visibility by using:
 
 * `keyboardDetectionController.state`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visibling`: visibling, `visible`: visible, `hiding`: hiding, `hidden`: hidden).
 
-* `keyboardDetectionController.stateAsBool([bool isIncludeStartChanging = false])`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden). If the `isIncludeStartChanging` is `true` than it will return `true` even when the `state` is `visibling` and `false` when it's `hiding`.
+* `keyboardDetectionController.stateAsBool([bool includeTransitionalState = false])`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden). If the `includeTransitionalState` is `true` than it will return `true` even when the `state` is `visibling` and `false` when it's `hiding`.
 
 * `keyboardDetectionController.addCallback(callback)` to add a callback to be called when the keyboard state is changed. If the callback returns `true` then it will be called eachtime the keyboard is changed, if `false` then it will be ignored. This `callback` also supports the `Future` method.
   

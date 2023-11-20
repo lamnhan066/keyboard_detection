@@ -1,3 +1,9 @@
+## 0.7.0
+
+* Update sdk version to `>=3.0.0 <4.0.0`.
+* Remove all deprecated methods and variables.
+* Change the variable name from `isIncludeStartChanging` to `includeTransitionalState`.
+
 ## 0.6.3
 
 * Update comments.
