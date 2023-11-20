@@ -93,9 +93,9 @@ class _MyAppState extends State<MyApp> {
               children: [
                 Text('State: $keyboardState'),
                 Text(
-                    'State as bool (isIncludeStartChanging = false): $stateAsBool'),
+                    'State as bool (includeTransitionalState = false): $stateAsBool'),
                 Text(
-                    'State as bool (isIncludeStartChanging = true): $stateAsBoolWithParamTrue'),
+                    'State as bool (includeTransitionalState = true): $stateAsBoolWithParamTrue'),
                 FutureBuilder(
                   future: keyboardDetectionController.ensureSizeLoaded,
                   builder: (context, snapshot) {
