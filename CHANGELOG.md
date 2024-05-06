@@ -1,3 +1,9 @@
+## 0.7.1
+
+* Improve the way to get the bottom inset.
+* Remove the screenshot to decrease the size of the package.
+* Update README.
+
 ## 0.7.0
 
 * Update sdk version to `>=3.0.0 <4.0.0`.

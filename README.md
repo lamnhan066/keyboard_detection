@@ -4,7 +4,7 @@ This plugin gives you an easy way to detect if the keyboard is visible or not. I
 
 ## Introduction
 
-<img src="https://raw.githubusercontent.com/vnniz/keyboard_detection/main/assets/Intro.webp" alt="Alt Text" width="300"/>
+<img src="https://raw.githubusercontent.com/lamnhan066/keyboard_detection/main/assets/Intro.webp" alt="Alt Text" width="300"/>
 
 ## Simple Usage
 
@@ -179,3 +179,7 @@ You can get the current state of the keyboard visibility by using:
 * `keyboardDetectionController.stream` to listen for keyboard visibility changing events in `KeyboardState`.
   
 * `keyboardDetectionController.size` to get the keyboard size. Please notice that this value may returns 0 even when the keyboard state is visible because the keyboard needs time to show up completely. So that, you should call `keyboardDetectionController.isSizeLoaded` to checks that the keyboard size is loaded or not. From version `0.5.0`, you can wait for this value by using `await keyboardDetectionController.ensureSizeLoaded`.
+
+## Limitations
+
+* This package uses the bottom inset to detect the keyboard visibility so it doesn't work with the floating keyboard (Issue: [#1](https://github.com/lamnhan066/keyboard_detection/issues/1))
