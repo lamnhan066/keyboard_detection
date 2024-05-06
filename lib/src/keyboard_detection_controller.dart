@@ -1,5 +1,6 @@
 part of 'keyboard_detection.dart';
 
+/// State of the keyboard.
 enum KeyboardState {
   /// Unknow state.
   unknown,
@@ -17,6 +18,7 @@ enum KeyboardState {
   hiding;
 }
 
+/// Type of the callback.
 typedef KeyboardDetectionCallback = FutureOr<bool> Function(
     KeyboardState state);
 
@@ -31,6 +33,7 @@ class KeyboardDetectionController {
   /// This value will be notified when the keyboard is starting visible (`true`) or not (`false`).
   final void Function(KeyboardState state)? onChanged;
 
+  /// List of all callbacks.
   final List<KeyboardDetectionCallback> _keyboardDetectionCallbacks = [];
 
   /// Controller for the keyboard visibility stream.
@@ -44,7 +47,7 @@ class KeyboardDetectionController {
   Stream<KeyboardState> get stream =>
       _streamOnChangedController.stream.asBroadcastStream();
 
-  /// Control the state as bool
+  /// The [KeyboardState] value as bool.
   bool? _stateAsBool;
 
   /// Get current state of the keyboard visibility.
@@ -83,17 +86,16 @@ class KeyboardDetectionController {
     return _stateAsBool;
   }
 
-  /// Control the state of keyboard.
-  // ignore: prefer_final_fields
+  /// Control the state of the keyboard.
   KeyboardState _state = KeyboardState.unknown;
 
-  /// State of the Keyboard
+  /// State of the Keyboard.
   ///
-  /// `unknown`
-  /// `visibling`
-  /// `visible`
-  /// `hidding`
-  /// `hidden`
+  /// [KeyboardState.unknown] : Unknown state
+  /// [KeyboardState.visibling] : Visibling
+  /// [KeyboardState.visible] : Visible
+  /// [KeyboardState.hiding] : Hiding
+  /// [KeyboardState.hidden] : Hidden
   KeyboardState get state => _state;
 
   /// Control the size of keyboard.
@@ -130,7 +132,8 @@ class KeyboardDetectionController {
     _keyboardDetectionCallbacks.add(callback);
   }
 
-  void _excuteCallbacks(KeyboardState state) {
+  /// Execute all callbacks
+  void _executeCallbacks(KeyboardState state) {
     for (final callback in _keyboardDetectionCallbacks) {
       final Completer<bool> completer = Completer();
       completer.future.then((isLooped) {

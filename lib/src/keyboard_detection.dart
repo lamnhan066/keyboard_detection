@@ -80,7 +80,10 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
       return;
     }
 
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
+    mediaQuery ??= MediaQueryData.fromView(View.of(context));
+
+    final bottomInset = mediaQuery.viewInsets.bottom;
     final controller = widget.controller;
 
     if (bottomInset == lastBottomInset) {
@@ -145,7 +148,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     if (widget.controller.onChanged != null) {
       widget.controller.onChanged!(state);
     }
-    widget.controller._excuteCallbacks(state);
+    widget.controller._executeCallbacks(state);
   }
 
   @override
