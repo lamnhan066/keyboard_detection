@@ -1,3 +1,8 @@
+## 0.7.2
+
+* Improve the way to get the bottom inset.
+* Update the size when the keyboard type is changed (Fixes [#2](https://github.com/lamnhan066/keyboard_detection/issues/2)).
+
 ## 0.7.1
 
 * Improve the way to get the bottom inset.
