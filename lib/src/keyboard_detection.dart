@@ -80,10 +80,12 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
       return;
     }
 
-    MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
-    mediaQuery ??= MediaQueryData.fromView(View.of(context));
+    final viewInsets = MediaQuery.maybeViewInsetsOf(context);
+    if (viewInsets == null) {
+      return;
+    }
 
-    final bottomInset = mediaQuery.viewInsets.bottom;
+    final bottomInset = viewInsets.bottom;
     final controller = widget.controller;
 
     if (bottomInset == lastBottomInset) {
@@ -93,30 +95,29 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
       // Increase the counter
       sameInsetsCounter++;
 
-      // Get keyboard size from max bottom view insets size.
-      if (lastFinishedBottomInset > controller.size) {
-        KeyboardDetectionController._keyboardSize = lastFinishedBottomInset;
-      }
-
       if (sameInsetsCounter >= maxSameInsetsCounter) {
+        // Update the keyboard size
+        if (lastFinishedBottomInset > 0) {
+          controller._updateKeyboardSize(lastFinishedBottomInset);
+        }
+
         // Mark that the keyboard size is loaded.
         if (!KeyboardDetectionController
                 ._ensureKeyboardSizeLoaded.isCompleted &&
             controller.size > 0) {
-          KeyboardDetectionController._isKeyboardSizeLoaded = true;
           KeyboardDetectionController._ensureKeyboardSizeLoaded.complete(true);
         }
 
         // If the bottom insets size is 0 => No keyboard visible.
         if (bottomInset == 0 && controller._state != KeyboardState.hidden) {
-          _setKeyboardState(KeyboardState.hidden);
+          controller._setKeyboardState(KeyboardState.hidden);
         }
 
         // If the bottom insets size >.
         if (controller.isSizeLoaded &&
             bottomInset > 0 &&
             controller._state != KeyboardState.visible) {
-          _setKeyboardState(KeyboardState.visible);
+          controller._setKeyboardState(KeyboardState.visible);
         }
 
         // Reset the counter when it's done.
@@ -130,25 +131,16 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
         if (bottomInset < lastFinishedBottomInset &&
             controller._state != KeyboardState.hiding &&
             controller._state != KeyboardState.hidden) {
-          _setKeyboardState(KeyboardState.hiding);
+          controller._setKeyboardState(KeyboardState.hiding);
         }
         if (bottomInset > lastFinishedBottomInset &&
             controller._state != KeyboardState.visibling &&
             controller._state != KeyboardState.visible) {
-          _setKeyboardState(KeyboardState.visibling);
+          controller._setKeyboardState(KeyboardState.visibling);
         }
       }
     }
     lastBottomInset = bottomInset;
-  }
-
-  void _setKeyboardState(KeyboardState state) {
-    widget.controller._state = state;
-    widget.controller._streamOnChangedController.sink.add(state);
-    if (widget.controller.onChanged != null) {
-      widget.controller.onChanged!(state);
-    }
-    widget.controller._executeCallbacks(state);
   }
 
   @override

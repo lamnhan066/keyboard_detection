@@ -110,13 +110,10 @@ class KeyboardDetectionController {
   /// may still 0 when the `KeyboardState` is `visible`.
   double get size => _keyboardSize ?? 0;
 
-  // Control the keyboard size state.
-  static bool? _isKeyboardSizeLoaded;
-
   /// To ensure that the keyboard size is available.
   ///
   /// Use [ensureSizeLoaded] to ensure that the keyboard is loaded as asynchronous.
-  bool get isSizeLoaded => _isKeyboardSizeLoaded ?? false;
+  bool get isSizeLoaded => _ensureKeyboardSizeLoaded.isCompleted;
 
   /// Control the keyboard size state.
   static final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
@@ -140,6 +137,22 @@ class KeyboardDetectionController {
         if (!isLooped) _keyboardDetectionCallbacks.remove(callback);
       });
       completer.complete(callback(state));
+    }
+  }
+
+  void _setKeyboardState(KeyboardState state) {
+    _state = state;
+    _streamOnChangedController.sink.add(state);
+    if (onChanged != null) {
+      onChanged!(state);
+    }
+    _executeCallbacks(state);
+  }
+
+  void _updateKeyboardSize(double size) {
+    if (_keyboardSize != size) {
+      _keyboardSize = size;
+      _setKeyboardState(_state);
     }
   }
 
