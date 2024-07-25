@@ -152,7 +152,6 @@ class KeyboardDetectionController {
   void _updateKeyboardSize(double size) {
     if (_keyboardSize != size) {
       _keyboardSize = size;
-      _setKeyboardState(_state);
     }
   }
 
