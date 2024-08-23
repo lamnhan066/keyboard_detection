@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
@@ -34,7 +33,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
   bool isSizeChecking = false;
   int sameInsetsCounter = 0;
 
-  final queue = Queue<Function>();
+  bool isQueue = false;
 
   @override
   void initState() {
@@ -60,12 +59,14 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
 
   /// Listen to the changing metrics until the keyboard is completely
   /// visible or hidden
-  void bottomInsetsCheck() {
+  void bottomInsetsCheck() async {
     if (isSizeChecking) {
-      queue.add(bottomInsetsCheck);
+      isQueue = true;
       return;
     }
     isSizeChecking = true;
+
+    await Future.delayed(const Duration(milliseconds: delayBettweenTwoCheck));
 
     Timer.periodic(
       const Duration(milliseconds: delayBettweenTwoCheck),
@@ -76,8 +77,9 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
             widget.controller.state == KeyboardState.visible) {
           timer.cancel();
           isSizeChecking = false;
-          if (queue.isNotEmpty) {
-            queue.first();
+          if (isQueue) {
+            isQueue = false;
+            bottomInsetsCheck();
           }
         }
       },
@@ -103,7 +105,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     }
 
     if (bottomInset == lastBottomInset) {
-      // Save max and min value of bottom insets for later comparing.
+      // Save max and min value of bottom insets for later comparison.
       lastFinishedBottomInset = lastBottomInset;
 
       // Increase the counter
