@@ -1,3 +1,7 @@
+## 0.7.3
+
+* Avoid queuing too much checks (Fixes [#3](https://github.com/lamnhan066/keyboard_detection/issues/3)).
+
 ## 0.7.2
 
 * Improve the way to get the bottom inset.
