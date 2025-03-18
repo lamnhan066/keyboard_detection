@@ -91,7 +91,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
       return;
     }
 
-    final viewInsets = MediaQuery.maybeViewInsetsOf(context);
+    final viewInsets = View.maybeOf(context)?.viewInsets;
     if (viewInsets == null) {
       return;
     }
