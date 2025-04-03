@@ -11,7 +11,7 @@ Easily detect keyboard visibility in your Flutter app with this plugin. It lever
 - Detect keyboard visibility changes (`unknown`, `visibling`, `visible`, `hiding`, `hidden`).
 - Access keyboard visibility state as an enum or boolean.
 - Listen to keyboard visibility changes via callbacks or streams.
-- Retrieve keyboard size and ensure it is fully loaded.
+- Retrieve keyboard size when it is fully loaded.
 
 ## Simple Usage
 
@@ -67,12 +67,7 @@ void initState() {
   keyboardDetectionController = KeyboardDetectionController(
     onChanged: (value) {
       print('Keyboard visibility changed: $value');
-      setState(() {
-        keyboardState = value;
-        stateAsBool = keyboardDetectionController.stateAsBool();
-        stateAsBoolWithParamTrue =
-            keyboardDetectionController.stateAsBool(true);
-      });
+      keyboardState = value;
     },
   );
 
@@ -121,15 +116,12 @@ Widget build(BuildContext context) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('State: $keyboardState'),
-              Text('State as bool (includeTransitionalState = false): $stateAsBool'),
-              Text('State as bool (includeTransitionalState = true): $stateAsBoolWithParamTrue'),
+              Text('State: ${keyboardDetectionController.state}'),
               FutureBuilder(
-                future: keyboardDetectionController.ensureKeyboardSizeLoaded,
+                future: keyboardDetectionController.ensureSizeLoaded,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Text(
-                        'Keyboard size loaded: ${keyboardDetectionController.keyboardSize}');
+                    return Text('Keyboard size loaded: ${keyboardDetectionController.size}');
                   }
                   return const Text('Loading keyboard size...');
                 },
@@ -139,9 +131,7 @@ Widget build(BuildContext context) {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const MyApp(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const MyApp()),
                   );
                 },
                 child: const Text('Navigate to another page'),
@@ -150,10 +140,9 @@ Widget build(BuildContext context) {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const MyApp(),
-                      ),
-                      (_) => false);
+                      MaterialPageRoute(builder: (_) => const MyApp()),
+                      (_) => false,
+                  );
                 },
                 child: const Text('Move to another page'),
               ),
