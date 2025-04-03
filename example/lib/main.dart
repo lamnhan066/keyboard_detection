@@ -121,12 +121,12 @@ class _MyAppState extends State<MyApp> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const MyApp(),
-                        ),
-                        (_) => false);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MyApp(),
+                      ),
+                    );
                   },
                   child: const Text('Move to another page'),
                 )
