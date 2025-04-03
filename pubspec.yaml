@@ -1,7 +1,11 @@
 name: keyboard_detection
-description: This plugin gives you an easy way to detect the keyboard visibility.
+description: This plugin gives you an easy way to detect the keyboard visibility using the bottom view inset.
 version: 0.7.3
 homepage: https://github.com/lamnhan066/keyboard_detection
+topics:
+  - keyboard
+  - detection
+  - visibility
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -13,5 +17,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
