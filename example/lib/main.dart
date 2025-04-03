@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     keyboardDetectionController = KeyboardDetectionController(
       onChanged: (value) {
-        print('Keyboard visibility onChanged: $value');
+        print('Keyboard visibility changed: $value');
         setState(() {
           keyboardState = value;
           stateAsBool = keyboardDetectionController.stateAsBool();
@@ -39,32 +39,27 @@ class _MyAppState extends State<MyApp> {
       },
     );
 
+    // Listen to the stream
     _sub = keyboardDetectionController.stream.listen((state) {
-      print('Listen to onChanged with Stream: $state');
+      print('Stream update: $state');
     });
 
-    // One time callback
+    // Add one-time callback
     keyboardDetectionController.addCallback((state) {
-      print('Listen to onChanged with one time Callback: $state');
-
-      // End this callback by returning false
+      print('One-time callback: $state');
       return false;
     });
 
-    // Looped callback
+    // Add looped callback
     keyboardDetectionController.addCallback((state) {
-      print('Listen to onChanged with looped Callback: $state');
-
-      // This callback will be looped
+      print('Looped callback: $state');
       return true;
     });
 
-    // Looped with future callback
+    // Add looped future callback
     keyboardDetectionController.addCallback((state) async {
       await Future.delayed(const Duration(milliseconds: 100));
-      print('Listen to onChanged with looped future Callback: $state');
-
-      // This callback will be looped
+      print('Looped future callback: $state');
       return true;
     });
 
@@ -101,10 +96,9 @@ class _MyAppState extends State<MyApp> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Text(
-                          'Keyboard size is loaded with size: ${keyboardDetectionController.size}');
+                          'Keyboard size loaded: ${keyboardDetectionController.size}');
                     }
-
-                    return const Text('Keyboard size is still loading');
+                    return const Text('Loading keyboard size...');
                   },
                 ),
                 const TextField(),
@@ -121,15 +115,15 @@ class _MyAppState extends State<MyApp> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const MyApp(),
-                      ),
-                    );
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyApp(),
+                        ),
+                        (_) => false);
                   },
                   child: const Text('Move to another page'),
-                )
+                ),
               ],
             ),
           ),
