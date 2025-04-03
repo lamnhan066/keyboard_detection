@@ -1,3 +1,3 @@
-library keyboard_detection;
+library;
 
 export 'src/keyboard_detection.dart';
