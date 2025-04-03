@@ -91,12 +91,12 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
       return;
     }
 
-    final viewInsets = MediaQuery.maybeViewInsetsOf(context);
-    if (viewInsets == null) {
+    final view = View.maybeOf(context);
+    if (view == null) {
       return;
     }
 
-    final bottomInset = viewInsets.bottom;
+    final bottomInset = view.viewInsets.bottom / view.devicePixelRatio;
     final controller = widget.controller;
 
     if (controller.state == KeyboardState.visible &&
