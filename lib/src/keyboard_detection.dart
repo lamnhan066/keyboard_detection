@@ -5,17 +5,21 @@ import 'package:flutter/material.dart';
 part 'keyboard_detection_controller.dart';
 
 class KeyboardDetection extends StatefulWidget {
-  /// This function uses the resizing of the bottom view inset to check the the keyboard visibility.
+  /// A widget that detects keyboard visibility by monitoring changes in the bottom view inset.
+  ///
+  /// This implementation tracks the animation of keyboard appearance and disappearance
+  /// to provide accurate state information through the controller.
   const KeyboardDetection({
     super.key,
     required this.controller,
     required this.child,
   });
 
-  /// The controller of the Keyboard Detection.
+  /// Controller that exposes keyboard state and size information.
+  /// Use this to listen for keyboard visibility changes in child widgets.
   final KeyboardDetectionController controller;
 
-  /// This is child widget.
+  /// The widget to render within the keyboard detection wrapper.
   final Widget child;
 
   @override
@@ -24,15 +28,26 @@ class KeyboardDetection extends StatefulWidget {
 
 class _KeyboardDetectionState extends State<KeyboardDetection>
     with WidgetsBindingObserver {
+  /// Maximum number of consecutive checks with the same insets before
+  /// considering keyboard animation as completed.
   static const int maxSameInsetsCounter = 5;
-  static const int delayBettweenTwoCheck = 10; // milliseconds
 
+  /// Time interval in milliseconds between consecutive bottom inset checks.
+  static const int delayBettweenTwoCheck = 10;
+
+  /// Most recently measured bottom inset value.
   double lastBottomInset = 0;
+
+  /// The bottom inset value when keyboard animation finished.
   double lastFinishedBottomInset = 0;
 
+  /// Flag indicating if keyboard size checking is in progress.
   bool isSizeChecking = false;
+
+  /// Counter for how many consecutive times the insets remained unchanged.
   int sameInsetsCounter = 0;
 
+  /// Flag to queue another check when current check is in progress.
   bool isQueue = false;
 
   @override
@@ -57,8 +72,10 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     bottomInsetsCheck();
   }
 
-  /// Listen to the changing metrics until the keyboard is completely
-  /// visible or hidden
+  /// Starts continuous monitoring of bottom insets until keyboard is fully
+  /// visible or hidden.
+  ///
+  /// Uses a queuing mechanism to prevent multiple simultaneous checks.
   void bottomInsetsCheck() async {
     if (isSizeChecking) {
       isQueue = true;
@@ -86,6 +103,13 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     );
   }
 
+  /// Core algorithm that processes bottom inset changes to determine keyboard state.
+  ///
+  /// This method:
+  /// - Detects keyboard showing/hiding animations
+  /// - Updates keyboard size in the controller
+  /// - Determines when animations have completed
+  /// - Triggers appropriate state changes in the controller
   void _bottomInsetsCheck() {
     if (!mounted) {
       return;
@@ -105,50 +129,52 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     }
 
     if (bottomInset == lastBottomInset) {
-      // Save max and min value of bottom insets for later comparison.
+      // Store the stabilized inset value for comparison with future values
       lastFinishedBottomInset = lastBottomInset;
 
-      // Increase the counter
+      // Count consecutive stable measurements
       sameInsetsCounter++;
 
       if (sameInsetsCounter >= maxSameInsetsCounter) {
-        // Update the keyboard size
+        // When stable for enough checks, update keyboard measurements
         if (lastFinishedBottomInset > 0) {
           controller._updateKeyboardSize(lastFinishedBottomInset);
         }
 
-        // Mark that the keyboard size is loaded.
+        // Mark that keyboard size has been successfully measured
         if (!KeyboardDetectionController
                 ._ensureKeyboardSizeLoaded.isCompleted &&
             controller.size > 0) {
           KeyboardDetectionController._ensureKeyboardSizeLoaded.complete(true);
         }
 
-        // If the bottom insets size is 0 => No keyboard visible.
+        // Update state to hidden when keyboard is gone
         if (bottomInset == 0 && controller._state != KeyboardState.hidden) {
           controller._setKeyboardState(KeyboardState.hidden);
         }
 
-        // If the bottom insets size >.
+        // Update state to visible when keyboard is fully shown
         if (controller.isSizeLoaded &&
             bottomInset > 0 &&
             controller._state != KeyboardState.visible) {
           controller._setKeyboardState(KeyboardState.visible);
         }
 
-        // Reset the counter when it's done.
+        // Reset stability counter after state update
         sameInsetsCounter = 0;
       }
     } else {
-      // Reset the counter when there is different bettween 2 checks.
+      // Reset counter when insets are changing
       sameInsetsCounter = 0;
 
       if ((bottomInset - lastFinishedBottomInset).abs() > 0) {
+        // Detect keyboard hiding animation
         if (bottomInset < lastFinishedBottomInset &&
             controller._state != KeyboardState.hiding &&
             controller._state != KeyboardState.hidden) {
           controller._setKeyboardState(KeyboardState.hiding);
         }
+        // Detect keyboard showing animation
         if (bottomInset > lastFinishedBottomInset &&
             controller._state != KeyboardState.visibling &&
             controller._state != KeyboardState.visible) {

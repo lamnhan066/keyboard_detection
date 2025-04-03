@@ -1,65 +1,65 @@
 part of 'keyboard_detection.dart';
 
-/// State of the keyboard.
+/// Represents the state of the keyboard.
 enum KeyboardState {
-  /// Unknow state.
+  /// Unknown state.
   unknown,
 
-  /// Completely visible.
+  /// Fully visible.
   visible,
 
-  /// Visibling.
+  /// Transitioning to visible.
   visibling,
 
-  /// Completely hidden.
+  /// Fully hidden.
   hidden,
 
-  /// Hiding.
+  /// Transitioning to hidden.
   hiding;
 }
 
-/// Type of the callback.
+/// Type definition for a callback function that handles keyboard state changes.
 typedef KeyboardDetectionCallback = FutureOr<bool> Function(
     KeyboardState state);
 
+/// Controller for detecting and managing keyboard visibility and state.
 class KeyboardDetectionController {
-  /// Controller of the keyboard visibility.
+  /// Creates a [KeyboardDetectionController].
   ///
-  /// `onChanged`: This value will be notified when the keyboard is visible (`true`) or not (`false`).
+  /// [onChanged]: A callback that is triggered when the keyboard state changes.
   KeyboardDetectionController({
     this.onChanged,
   });
 
-  /// This value will be notified when the keyboard is starting visible (`true`) or not (`false`).
+  /// Callback triggered when the keyboard state changes.
   final void Function(KeyboardState state)? onChanged;
 
-  /// List of all callbacks.
+  /// List of registered callbacks to be executed on keyboard state changes.
   final List<KeyboardDetectionCallback> _keyboardDetectionCallbacks = [];
 
-  /// Controller for the keyboard visibility stream.
+  /// Stream controller for broadcasting keyboard state changes.
   final StreamController<KeyboardState> _streamOnChangedController =
       StreamController.broadcast();
 
-  /// Get the current keyboard state stream.
+  /// Provides a stream of keyboard state changes.
   ///
-  /// You can use [addCallback] to add a function as a callback to avoid forgeting
-  /// to close the subscription.
+  /// Use [addCallback] to register a callback instead of directly subscribing
+  /// to avoid forgetting to close the subscription.
   Stream<KeyboardState> get stream =>
       _streamOnChangedController.stream.asBroadcastStream();
 
-  /// The [KeyboardState] value as bool.
+  /// Cached boolean representation of the keyboard state.
   bool? _stateAsBool;
 
-  /// Get current state of the keyboard visibility.
+  /// Returns the current keyboard visibility state as a boolean.
   ///
-  /// Returns:
-  ///   `null`: Unknown state because the plugin isn't initialized.
-  ///   [includeTransitionalState] == `false`:
-  ///     - `true`: [KeyboardState.visible]
-  ///     - `false`: [KeyboardState.hidden]
-  ///   [includeTransitionalState] == `true`:
-  ///     - `true`: [KeyboardState.visibling] or [KeyboardState.visible]
-  ///     - `false`: [KeyboardState.hiding] or [KeyboardState.hidden]
+  /// - `null`: Unknown state (plugin not initialized).
+  /// - [includeTransitionalState] == `false`:
+  ///   - `true`: [KeyboardState.visible]
+  ///   - `false`: [KeyboardState.hidden]
+  /// - [includeTransitionalState] == `true`:
+  ///   - `true`: [KeyboardState.visibling] or [KeyboardState.visible]
+  ///   - `false`: [KeyboardState.hiding] or [KeyboardState.hidden]
   bool? stateAsBool([bool includeTransitionalState = false]) {
     if (_state == KeyboardState.unknown) {
       _stateAsBool = null;
@@ -86,50 +86,49 @@ class KeyboardDetectionController {
     return _stateAsBool;
   }
 
-  /// Control the state of the keyboard.
+  /// Current state of the keyboard.
   KeyboardState _state = KeyboardState.unknown;
 
-  /// State of the Keyboard.
+  /// Returns the current keyboard state.
   ///
-  /// [KeyboardState.unknown] : Unknown state
-  /// [KeyboardState.visibling] : Visibling
-  /// [KeyboardState.visible] : Visible
-  /// [KeyboardState.hiding] : Hiding
-  /// [KeyboardState.hidden] : Hidden
+  /// Possible values:
+  /// - [KeyboardState.unknown]: Unknown state.
+  /// - [KeyboardState.visibling]: Transitioning to visible.
+  /// - [KeyboardState.visible]: Fully visible.
+  /// - [KeyboardState.hiding]: Transitioning to hidden.
+  /// - [KeyboardState.hidden]: Fully hidden.
   KeyboardState get state => _state;
 
-  /// Control the size of keyboard.
+  /// Cached size of the keyboard.
   static double? _keyboardSize;
 
-  /// Get the keyboard size. The keyboard must be visible at least 1 time to make this works.
-  /// If not, this value will return 0. You can check to ensure the keyboard size is available
-  /// via `isKeyboardSizeLoaded`.
+  /// Returns the current keyboard size.
   ///
-  /// [NOTICE]: This value may be loaded after the keyboard visibility a little bit
-  /// because the keyboard needs more time to be showed up completely. So that this value
-  /// may still 0 when the `KeyboardState` is `visible`.
+  /// The keyboard must have been visible at least once for this value to be accurate.
+  /// If not, it returns `0`. Use [isSizeLoaded] to check if the size is available.
+  ///
+  /// Note: The keyboard size may take some time to load completely after becoming visible.
   double get size => _keyboardSize ?? 0;
 
-  /// To ensure that the keyboard size is available.
+  /// Indicates whether the keyboard size has been loaded.
   ///
-  /// Use [ensureSizeLoaded] to ensure that the keyboard is loaded as asynchronous.
+  /// Use [ensureSizeLoaded] to wait asynchronously until the size is available.
   bool get isSizeLoaded => _ensureKeyboardSizeLoaded.isCompleted;
 
-  /// Control the keyboard size state.
+  /// Completer to track the loading state of the keyboard size.
   static final Completer<bool> _ensureKeyboardSizeLoaded = Completer<bool>();
 
-  /// Ensure that the keyboard size is loaded.
+  /// Ensures that the keyboard size is loaded asynchronously.
   Future<void> get ensureSizeLoaded => _ensureKeyboardSizeLoaded.future;
 
-  /// Add callback to be executed when the keyboard state changes.
+  /// Registers a callback to be executed when the keyboard state changes.
   ///
-  /// This callback will be notified when the keyboard state is changed
-  /// until it returns `false`.
+  /// The callback will continue to be notified until it returns `false`.
   void addCallback(KeyboardDetectionCallback callback) {
     _keyboardDetectionCallbacks.add(callback);
   }
 
-  /// Execute all callbacks
+  /// Executes all registered callbacks with the given keyboard state.
   void _executeCallbacks(KeyboardState state) {
     for (final callback in _keyboardDetectionCallbacks) {
       final Completer<bool> completer = Completer();
@@ -140,6 +139,7 @@ class KeyboardDetectionController {
     }
   }
 
+  /// Updates the current keyboard state and notifies listeners.
   void _setKeyboardState(KeyboardState state) {
     _state = state;
     _streamOnChangedController.sink.add(state);
@@ -149,13 +149,14 @@ class KeyboardDetectionController {
     _executeCallbacks(state);
   }
 
+  /// Updates the cached keyboard size.
   void _updateKeyboardSize(double size) {
     if (_keyboardSize != size) {
       _keyboardSize = size;
     }
   }
 
-  /// Close unused variables after dispose. Internal use only.
+  /// Cleans up resources when the controller is disposed.
   Future<void> _close() async {
     await _streamOnChangedController.close();
   }
