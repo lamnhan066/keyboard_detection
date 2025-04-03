@@ -1,58 +1,63 @@
 # Keyboard Detection
 
-This plugin gives you an easy way to detect if the keyboard is visible or not. It uses the resizing of the bottom view inset to check the the keyboard visibility, so it's native to flutter.
+Easily detect keyboard visibility in your Flutter app with this plugin. It leverages the resizing of the bottom view inset to determine keyboard visibility, ensuring a native Flutter experience.
 
 ## Introduction
 
-<img src="https://raw.githubusercontent.com/lamnhan066/keyboard_detection/main/assets/Intro.webp" alt="Alt Text" width="300"/>
+<img src="https://raw.githubusercontent.com/lamnhan066/keyboard_detection/main/assets/Intro.webp" alt="Keyboard Detection Plugin" width="300"/>
+
+## Features
+
+- Detect keyboard visibility changes (`unknown`, `visibling`, `visible`, `hiding`, `hidden`).
+- Access keyboard visibility state as an enum or boolean.
+- Listen to keyboard visibility changes via callbacks or streams.
+- Retrieve keyboard size and ensure it is fully loaded.
 
 ## Simple Usage
 
-You just need to wrap the `Scaffold` with `KeyboardDetection` like below and listen to `onChanged` value.
+Wrap your `Scaffold` with `KeyboardDetection` and listen to the `onChanged` value:
 
-``` dart
+```dart
 @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: KeyboardDetection(
-        controller: KeyboardDetectionController(
-          onChanged: (value) {
-            print('Keyboard visibility onChanged: $value');
-            setState(() {
-              keyboardState = value;
-              stateAsBool = keyboardDetectionController.stateAsBool();
-              stateAsBoolWithParamTrue =
-                  keyboardDetectionController.stateAsBool(true);
-            });
-          },
+Widget build(BuildContext context) {
+  return MaterialApp(
+    home: KeyboardDetection(
+      controller: KeyboardDetectionController(
+        onChanged: (value) {
+          print('Keyboard visibility changed: $value');
+          setState(() {
+            keyboardState = value;
+            stateAsBool = keyboardDetectionController.stateAsBool();
+            stateAsBoolWithParamTrue =
+                keyboardDetectionController.stateAsBool(true);
+          });
+        },
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Keyboard Detection'),
         ),
-       child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Keyboard Detection'),
-          ),
-          body: Center(
-            child: Column(
-              children: [
-                Text('State: $keyboardState'),
-                Text(
-                    'State as bool (includeTransitionalState = false): $stateAsBool'),
-                Text(
-                    'State as bool (includeTransitionalState = true): $stateAsBoolWithParamTrue'),
-                const TextField(),
-              ],
-            ),
+        body: Center(
+          child: Column(
+            children: [
+              Text('State: $keyboardState'),
+              Text('State as bool (includeTransitionalState = false): $stateAsBool'),
+              Text('State as bool (includeTransitionalState = true): $stateAsBoolWithParamTrue'),
+              const TextField(),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 ```
 
-`onChanged` will be returned in enum `KeyboardState` (`unknown`: unknown, `visibling`: visibling, `visible`: visible, `hiding`: hiding, `hidden`: hidden).
+The `onChanged` callback returns a `KeyboardState` enum (`unknown`, `visibling`, `visible`, `hiding`, `hidden`).
 
-## Usage With Controller
+## Advanced Usage with Controller
 
-You can declare the `controller` outside the `build` method like below:
+Declare the `KeyboardDetectionController` outside the `build` method for more control:
 
 ```dart
 late KeyboardDetectionController keyboardDetectionController;
@@ -61,43 +66,37 @@ late KeyboardDetectionController keyboardDetectionController;
 void initState() {
   keyboardDetectionController = KeyboardDetectionController(
     onChanged: (value) {
-      print('Keyboard visibility onChanged: $value');
+      print('Keyboard visibility changed: $value');
       setState(() {
         keyboardState = value;
         stateAsBool = keyboardDetectionController.stateAsBool();
         stateAsBoolWithParamTrue =
-                  keyboardDetectionController.stateAsBool(true);
+            keyboardDetectionController.stateAsBool(true);
       });
     },
   );
 
   // Listen to the stream
   _sub = keyboardDetectionController.stream.listen((state) {
-    print('Listen to onChanged with Stream: $state');
+    print('Stream update: $state');
   });
 
-  // One time callback
+  // Add one-time callback
   keyboardDetectionController.addCallback((state) {
-    print('Listen to onChanged with one time Callback: $state');
-
-    // End this callback by returning false
+    print('One-time callback: $state');
     return false;
   });
 
-  // Looped callback
+  // Add looped callback
   keyboardDetectionController.addCallback((state) {
-    print('Listen to onChanged with looped Callback: $state');
-
-    // This callback will be looped
+    print('Looped callback: $state');
     return true;
   });
 
-  // Looped with future callback
+  // Add looped future callback
   keyboardDetectionController.addCallback((state) async {
     await Future.delayed(const Duration(milliseconds: 100));
-    print('Listen to onChanged with looped future Callback: $state');
-
-    // This callback will be looped
+    print('Looped future callback: $state');
     return true;
   });
 
@@ -105,9 +104,9 @@ void initState() {
 }
 ```
 
-and add it to `controller` inside `build` method:
+Use the controller in the `build` method:
 
-``` dart
+```dart
 @override
 Widget build(BuildContext context) {
   return KeyboardDetection(
@@ -130,10 +129,9 @@ Widget build(BuildContext context) {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Text(
-                        'Keyboard size is loaded with size: ${keyboardDetectionController.keyboardSize}');
+                        'Keyboard size loaded: ${keyboardDetectionController.keyboardSize}');
                   }
-
-                  return const Text('Keyboard size is still loading');
+                  return const Text('Loading keyboard size...');
                 },
               ),
               const TextField(),
@@ -158,7 +156,7 @@ Widget build(BuildContext context) {
                       (_) => false);
                 },
                 child: const Text('Move to another page'),
-              )
+              ),
             ],
           ),
         ),
@@ -168,18 +166,18 @@ Widget build(BuildContext context) {
 }
 ```
 
-You can get the current state of the keyboard visibility by using:
+### Controller Methods
 
-* `keyboardDetectionController.state`: the current state of the keyboard visibility return in enum `KeyboardState` (`unknown`: unknown, `visibling`: visibling, `visible`: visible, `hiding`: hiding, `hidden`: hidden).
-
-* `keyboardDetectionController.stateAsBool([bool includeTransitionalState = false])`: the current state of the keyboard visibility return in `bool?` (`null`: unknown, `true`: visible, `false`: hidden). If the `includeTransitionalState` is `true` than it will return `true` even when the `state` is `visibling` and `false` when it's `hiding`.
-
-* `keyboardDetectionController.addCallback(callback)` to add a callback to be called when the keyboard state is changed. If the callback returns `true` then it will be called eachtime the keyboard is changed, if `false` then it will be ignored. This `callback` also supports the `Future` method.
-  
-* `keyboardDetectionController.stream` to listen for keyboard visibility changing events in `KeyboardState`.
-  
-* `keyboardDetectionController.size` to get the keyboard size. Please notice that this value may returns 0 even when the keyboard state is visible because the keyboard needs time to show up completely. So that, you should call `keyboardDetectionController.isSizeLoaded` to checks that the keyboard size is loaded or not. From version `0.5.0`, you can wait for this value by using `await keyboardDetectionController.ensureSizeLoaded`.
+- `keyboardDetectionController.state`: Get the current keyboard visibility state as a `KeyboardState` enum.
+- `keyboardDetectionController.stateAsBool([bool includeTransitionalState = false])`: Get the keyboard visibility as a `bool?`. If `includeTransitionalState` is `true`, transitional states (`visibling`, `hiding`) are included.
+- `keyboardDetectionController.addCallback(callback)`: Add a callback for state changes. Return `true` for repeated calls, `false` to stop.
+- `keyboardDetectionController.stream`: Listen to keyboard visibility changes as a stream.
+- `keyboardDetectionController.size`: Get the keyboard size. Use `keyboardDetectionController.ensureSizeLoaded` to ensure the size is loaded.
 
 ## Limitations
 
-* This package uses the bottom inset to detect the keyboard visibility so it doesn't work with the floating keyboard (Issue: [#1](https://github.com/lamnhan066/keyboard_detection/issues/1))
+- This package uses the bottom inset to detect keyboard visibility, so it doesn't work with floating keyboards ([Issue #1](https://github.com/lamnhan066/keyboard_detection/issues/1)).
+
+## Contributions
+
+Contributions and feedback are welcome! Feel free to open issues or submit pull requests.
