@@ -1,3 +1,8 @@
+## 0.8.0
+
+* Use `View` instead of `MediaQuery` to retrieve the bottom view inset (Thanks to @nazarrd for the idea).
+* Update docs, example and README.
+
 ## 0.7.3
 
 * Avoid queuing too much checks (Fixes [#3](https://github.com/lamnhan066/keyboard_detection/issues/3)).
