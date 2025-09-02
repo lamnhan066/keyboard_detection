@@ -33,7 +33,7 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
   static const int maxSameInsetsCounter = 5;
 
   /// Time interval in milliseconds between consecutive bottom inset checks.
-  static const int delayBettweenTwoCheck = 10;
+  static const checkInterval = Duration(milliseconds: 10);
 
   /// Most recently measured bottom inset value.
   double lastBottomInset = 0;
@@ -83,24 +83,19 @@ class _KeyboardDetectionState extends State<KeyboardDetection>
     }
     isSizeChecking = true;
 
-    await Future.delayed(const Duration(milliseconds: delayBettweenTwoCheck));
+    Timer.periodic(checkInterval, (timer) {
+      _bottomInsetsCheck();
 
-    Timer.periodic(
-      const Duration(milliseconds: delayBettweenTwoCheck),
-      (timer) {
-        _bottomInsetsCheck();
-
-        if (widget.controller.state == KeyboardState.hidden ||
-            widget.controller.state == KeyboardState.visible) {
-          timer.cancel();
-          isSizeChecking = false;
-          if (isQueue) {
-            isQueue = false;
-            bottomInsetsCheck();
-          }
+      if (widget.controller.state == KeyboardState.hidden ||
+          widget.controller.state == KeyboardState.visible) {
+        timer.cancel();
+        isSizeChecking = false;
+        if (isQueue) {
+          isQueue = false;
+          bottomInsetsCheck();
         }
-      },
-    );
+      }
+    });
   }
 
   /// Core algorithm that processes bottom inset changes to determine keyboard state.
