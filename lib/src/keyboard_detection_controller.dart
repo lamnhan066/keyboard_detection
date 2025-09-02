@@ -128,6 +128,20 @@ class KeyboardDetectionController {
     _keyboardDetectionCallbacks[callback] = true;
   }
 
+  /// Removes a previously registered callback.
+  ///
+  /// This will stop the callback from being notified of future keyboard state changes.
+  void removeCallback(KeyboardDetectionCallback callback) {
+    _keyboardDetectionCallbacks.remove(callback);
+  }
+
+  /// Removes all registered callbacks.
+  ///
+  /// This will stop all callbacks from being notified of future keyboard state changes.
+  void removeAllCallbacks() {
+    _keyboardDetectionCallbacks.clear();
+  }
+
   /// Executes all registered callbacks with the given keyboard state.
   Future<void> _executeCallbacks(KeyboardState state) async {
     final callbacks = List<MapEntry<KeyboardDetectionCallback, bool>>.from(
