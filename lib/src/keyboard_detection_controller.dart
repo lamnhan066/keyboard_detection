@@ -35,7 +35,7 @@ class KeyboardDetectionController {
   final void Function(KeyboardState state)? onChanged;
 
   /// List of registered callbacks to be executed on keyboard state changes.
-  final List<KeyboardDetectionCallback> _keyboardDetectionCallbacks = [];
+  final Map<KeyboardDetectionCallback, bool> _keyboardDetectionCallbacks = {};
 
   /// Stream controller for broadcasting keyboard state changes.
   final StreamController<KeyboardState> _streamOnChangedController =
@@ -125,26 +125,23 @@ class KeyboardDetectionController {
   ///
   /// The callback will continue to be notified until it returns `false`.
   void addCallback(KeyboardDetectionCallback callback) {
-    _keyboardDetectionCallbacks.add(callback);
+    _keyboardDetectionCallbacks[callback] = true;
   }
 
   /// Executes all registered callbacks with the given keyboard state.
   Future<void> _executeCallbacks(KeyboardState state) async {
-    final callbacks =
-        List<KeyboardDetectionCallback>.from(_keyboardDetectionCallbacks);
+    final callbacks = List<MapEntry<KeyboardDetectionCallback, bool>>.from(
+      _keyboardDetectionCallbacks.entries.where((entry) => entry.value),
+    );
 
-    final results = await Future.wait<(KeyboardDetectionCallback, bool)>(
-      callbacks.map((callback) async {
-        final isLooped = await callback(state);
-        return (callback, isLooped);
+    await Future.wait<void>(
+      callbacks.map((entry) async {
+        final isLooped = await entry.key(state);
+        _keyboardDetectionCallbacks[entry.key] = isLooped;
       }),
     );
 
-    for (final (callback, isLooped) in results) {
-      if (!isLooped) {
-        _keyboardDetectionCallbacks.remove(callback);
-      }
-    }
+    _keyboardDetectionCallbacks.removeWhere((key, value) => !value);
   }
 
   /// Updates the current keyboard state and notifies listeners.
