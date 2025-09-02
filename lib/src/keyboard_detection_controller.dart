@@ -124,21 +124,29 @@ class KeyboardDetectionController {
   /// Registers a callback to be executed when the keyboard state changes.
   ///
   /// The callback will continue to be notified until it returns `false`.
+  @Deprecated('Use registerCallback instead')
   void addCallback(KeyboardDetectionCallback callback) {
     _keyboardDetectionCallbacks[callback] = true;
   }
 
-  /// Removes a previously registered callback.
+  /// Registers a callback to be executed when the keyboard state changes.
+  ///
+  /// The callback will continue to be notified until it returns `false`.
+  void registerCallback(KeyboardDetectionCallback callback) {
+    _keyboardDetectionCallbacks[callback] = true;
+  }
+
+  /// Unregisters a previously registered callback.
   ///
   /// This will stop the callback from being notified of future keyboard state changes.
-  void removeCallback(KeyboardDetectionCallback callback) {
+  void unregisterCallback(KeyboardDetectionCallback callback) {
     _keyboardDetectionCallbacks.remove(callback);
   }
 
-  /// Removes all registered callbacks.
+  /// Unregisters all registered callbacks.
   ///
   /// This will stop all callbacks from being notified of future keyboard state changes.
-  void removeAllCallbacks() {
+  void unregisterAllCallbacks() {
     _keyboardDetectionCallbacks.clear();
   }
 
