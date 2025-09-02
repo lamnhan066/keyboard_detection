@@ -44,9 +44,21 @@ class _MyAppState extends State<MyApp> {
       print('Stream update: $state');
     });
 
-    // Add one-time callback
+    // Add one-time callback 1
     keyboardDetectionController.addCallback((state) {
-      print('One-time callback: $state');
+      print('One-time callback 1: $state');
+      return false;
+    });
+
+    // Add one-time callback 2
+    keyboardDetectionController.addCallback((state) {
+      print('One-time callback 2: $state');
+      return false;
+    });
+
+    // Add one-time callback 2 again to test removal
+    keyboardDetectionController.addCallback((state) {
+      print('One-time callback 2: $state');
       return false;
     });
 
