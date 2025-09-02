@@ -129,13 +129,21 @@ class KeyboardDetectionController {
   }
 
   /// Executes all registered callbacks with the given keyboard state.
-  void _executeCallbacks(KeyboardState state) {
-    for (final callback in _keyboardDetectionCallbacks) {
-      final Completer<bool> completer = Completer();
-      completer.future.then((isLooped) {
-        if (!isLooped) _keyboardDetectionCallbacks.remove(callback);
-      });
-      completer.complete(callback(state));
+  Future<void> _executeCallbacks(KeyboardState state) async {
+    final callbacks =
+        List<KeyboardDetectionCallback>.from(_keyboardDetectionCallbacks);
+
+    final results = await Future.wait<(KeyboardDetectionCallback, bool)>(
+      callbacks.map((callback) async {
+        final isLooped = await callback(state);
+        return (callback, isLooped);
+      }),
+    );
+
+    for (final (callback, isLooped) in results) {
+      if (!isLooped) {
+        _keyboardDetectionCallbacks.remove(callback);
+      }
     }
   }
 
