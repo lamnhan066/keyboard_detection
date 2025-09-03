@@ -43,7 +43,7 @@ class KeyboardDetectionController {
 
   /// Provides a stream of keyboard state changes.
   ///
-  /// Use [addCallback] to register a callback instead of directly subscribing
+  /// Use [registerCallback] to register a callback instead of directly subscribing
   /// to avoid forgetting to close the subscription.
   Stream<KeyboardState> get stream =>
       _streamOnChangedController.stream.asBroadcastStream();

@@ -45,31 +45,31 @@ class _MyAppState extends State<MyApp> {
     });
 
     // Add one-time callback 1
-    keyboardDetectionController.addCallback((state) {
+    keyboardDetectionController.registerCallback((state) {
       print('One-time callback 1: $state');
       return false;
     });
 
     // Add one-time callback 2
-    keyboardDetectionController.addCallback((state) {
+    keyboardDetectionController.registerCallback((state) {
       print('One-time callback 2: $state');
       return false;
     });
 
     // Add one-time callback 2 again to test removal
-    keyboardDetectionController.addCallback((state) {
+    keyboardDetectionController.registerCallback((state) {
       print('One-time callback 2: $state');
       return false;
     });
 
     // Add looped callback
-    keyboardDetectionController.addCallback((state) {
+    keyboardDetectionController.registerCallback((state) {
       print('Looped callback: $state');
       return true;
     });
 
     // Add looped future callback
-    keyboardDetectionController.addCallback((state) async {
+    keyboardDetectionController.registerCallback((state) async {
       await Future.delayed(const Duration(milliseconds: 100));
       print('Looped future callback: $state');
       return true;
