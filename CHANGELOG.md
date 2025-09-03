@@ -1,3 +1,11 @@
+## 0.8.1
+
+* Replace `addCallback` with `registerCallback`.
+* Add `unregisterCallback` and `unregisterAllCallbacks` methods.
+* Improve the callback removal to avoid race conditions.
+* Improve the internal calculation to improve the perfomance.
+* Improve the example.
+
 ## 0.8.0
 
 * Use `View` instead of `MediaQuery` to retrieve the bottom view inset (Thanks to @nazarrd for the idea).
